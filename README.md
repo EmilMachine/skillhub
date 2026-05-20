@@ -4,23 +4,38 @@ Curated Claude Code plugins for personal development workflows.
 
 ## Installation
 
-```bash
-claude plugin add https://github.com/EmilMachine/skillhub
-claude plugin install skillhub/example-plugin
-claude plugin list
+### From Claude Code CLI (Inside Interactive Mode)
+
+```sh
+/plugin marketplace add https://github.com/EmilMachine/skillhub
+/plugin install md3step
+/plugin list
 ```
 
-## Updates
+### Plugin Updates
+
+**Note:** There is no direct `/plugin update <name>` command. To update an individual plugin, reinstall it:
+
+**CLI:**
+```sh
+/plugin uninstall md3step
+/plugin install md3step@skillhub
+```
+
+### Marketplace Updates
+
+**CLI:**
+```sh
+/plugin marketplace update skillhub
+/reload-plugins
+```
+
+### Local Development/Testing
 
 ```bash
-# Update all
-claude plugin update skillhub
-
-# Check versions
-cd ~/.claude/plugins/skillhub && git fetch && git log HEAD..origin/main --oneline
-
-# Rollback if needed
-cd ~/.claude/plugins/skillhub && git checkout HEAD~1
+# CLI: Add local marketplace
+/plugin marketplace add /Users/your-username/code/skillhub
+/plugin install md3step
 ```
 
 **Versioning**: MAJOR.MINOR.PATCH ([semver](https://semver.org/))
@@ -28,29 +43,56 @@ cd ~/.claude/plugins/skillhub && git checkout HEAD~1
 
 ## Plugins
 
+### md3step
+Terse markdown research-plan-implement workflow.
+- `/mdresearch <path>` - Research codebase from context file
+- `/mdplan <path>` - Generate implementation plan from research
+- `/mdrefine <path>` - Refine plan with user's inline answers
+- `/mdimplement <path>` - Execute plan with testing and verification
+- [Docs](./plugins/md3step/README.md)
+
 ### example-plugin
 - `/hello` - Greeting skill demonstrating structure
 - [Docs](./plugins/example-plugin/README.md)
 
 ## Creating Plugins
 
+### Terminal
+
 ```bash
 cp -r templates/plugin-template plugins/my-plugin
-# Edit PLUGIN.json, skills/*.md, README.md
-claude plugin add /path/to/skillhub  # test locally
+# Edit .claude-plugin/plugin.json, skills/*/SKILL.md, README.md
+
+# Test locally
+claude --plugin-dir /path/to/skillhub/plugins/my-plugin
+```
+
+### CLI
+
+```
+# Add local marketplace for testing
+/plugin marketplace add /path/to/skillhub
+/plugin install my-plugin
+/reload-plugins
 ```
 
 **Structure:**
 ```
 plugins/your-plugin/
-├── README.md       # Required: usage + example
-├── PLUGIN.json     # Required: metadata
-└── skills/*.md     # Required: YAML frontmatter
+├── README.md                          # Required: usage + workflow
+├── .claude-plugin/
+│   └── plugin.json                    # Required: metadata
+└── skills/
+    └── skillname/
+        └── SKILL.md                   # Required: YAML + implementation
 ```
 
 **Requirements:**
-- Must: README, PLUGIN.json, ≥1 SKILL.md with YAML
-- Should: Prerequisites, semver
+- Must: README, .claude-plugin/plugin.json, ≥1 skill with SKILL.md
+- Plugin.json: Use author object with name/email, skills array with paths
+- Skills: YAML frontmatter, terse implementation instructions
+- README: Skills section, Workflow, Features, Installation
+- Should: Prerequisites, semver versioning
 - Skip: Tests, complex processes
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).

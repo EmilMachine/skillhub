@@ -2,10 +2,11 @@
   "name": "example-plugin",
   "version": "1.0.0",
   "description": "Example plugin demonstrating skill structure and best practices",
-  "author": "Emil Machine",
-  "skills": ["./skills/hello.md"],
-  "mcpServers": {},
-  "commands": {},
-  "hooks": {},
-  "agents": {}
+  "author": {
+    "name": "Emil Machine",
+    "email": "slaskmachine@gmail.com"
+  },
+  "skills": [
+    "./skills/hello"
+  ]
 }

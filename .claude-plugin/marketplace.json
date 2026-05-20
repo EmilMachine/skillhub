@@ -1,0 +1,26 @@
+{
+  "name": "skillhub",
+  "owner": {
+    "name": "Emil Machine",
+    "email": "slaskmachine@gmail.com"
+  },
+  "metadata": {
+    "description": "A curated Claude Code skill marketplace for personal development workflows",
+    "version": "1.0.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "example-plugin",
+      "source": "./plugins/example-plugin",
+      "description": "Example plugin demonstrating best practices",
+      "version": "1.0.0"
+    },
+    {
+      "name": "md3step",
+      "source": "./plugins/md3step",
+      "description": "Terse markdown research-plan-implement workflow",
+      "version": "1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "md3step",
+  "version": "1.0.0",
+  "description": "Terse markdown research-plan-implement workflow",
+  "author": {
+    "name": "Emil",
+    "email": "slaskmachine@gmail.com"
+  },
+  "skills": [
+    "./skills/mdresearch",
+    "./skills/mdplan",
+    "./skills/mdrefine",
+    "./skills/mdimplement"
+  ]
+}

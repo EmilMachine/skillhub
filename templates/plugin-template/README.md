@@ -2,33 +2,33 @@
 
 Brief description of what this plugin does.
 
-## Description
+## Skills
 
-Detailed description of the plugin's purpose, capabilities, and use cases.
-
-## Installation
-
-If you've already installed the skillhub marketplace:
-
-```bash
-claude plugin install skillhub/your-plugin-name
-```
-
-## Skills Included
-
-### skill-name
-
+### `/skillname`
 Brief description of the skill.
+- **Input:** What it takes as input
+- **Output:** What it produces
+- **Usage:** `/skillname <arguments>`
 
-**Usage:**
-```
-/skill-name [arguments]
-```
+## Workflow
 
-**What it does:**
+1. Step 1 of typical usage
+2. Step 2 of typical usage
+3. Step 3 of typical usage
+
+## Features
+
 - Key feature 1
 - Key feature 2
 - Key feature 3
+
+## Installation
+
+From Claude Code CLI:
+```
+/plugin marketplace add https://github.com/EmilMachine/skillhub
+/plugin install plugin-name
+```
 
 ## Prerequisites
 
@@ -36,32 +36,6 @@ Brief description of the skill.
 - Mention any system requirements
 - Note any configuration needed
 
-## Configuration (if applicable)
-
-```bash
-# Example configuration steps
-```
-
-## Examples
-
-**Example 1: Basic usage**
-```
-/skill-name
-```
-
-**Example 2: Advanced usage**
-```
-/skill-name --option value
-```
-
 ## Version History
 
 - **1.0.0** - Initial release
-
-## Contributing
-
-Contributions welcome! Fork the repo, make changes, and submit a PR with a brief description.
-
-## License
-
-Same as skillhub marketplace (see root LICENSE)

@@ -1,0 +1,12 @@
+{
+  "name": "plugin-name",
+  "version": "1.0.0",
+  "description": "Brief description of your plugin",
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com"
+  },
+  "skills": [
+    "./skills/example"
+  ]
+}

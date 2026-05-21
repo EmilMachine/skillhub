@@ -1,10 +1,7 @@
 ---
 name: mdimplement
 description: Execute implementation plan with testing and verification
-args:
-  - name: path
-    description: Path to 2_plan.md file
-    required: true
+argument-hint: path/to/2_plan.md
 ---
 
 **TERSE MODE:** Minimal output. Bullet points. Technical language.

@@ -1,10 +1,7 @@
 ---
 name: mdresearch
 description: Research codebase state from context file
-args:
-  - name: path
-    description: Path to 0_context.md file
-    required: true
+argument-hint: path/to/0_context.md
 ---
 
 **TERSE MODE:** Minimal output. Bullet points. Technical language.

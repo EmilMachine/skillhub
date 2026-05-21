@@ -2,7 +2,7 @@
   "name": "skillhub",
   "owner": {
     "name": "Emil Machine",
-    "email": "slaskmachine@gmail.com"
+    "email": "slakmachine+skillhub@gmail.com"
   },
   "metadata": {
     "description": "A curated Claude Code skill marketplace for personal development workflows",
@@ -20,6 +20,12 @@
       "name": "md3step",
       "source": "./plugins/md3step",
       "description": "Terse markdown research-plan-implement workflow",
+      "version": "1.0.0"
+    },
+    {
+      "name": "dev-essentials",
+      "source": "./plugins/dev-essentials",
+      "description": "Dev workflow essentials: project setup, code review, pro/con analysis",
       "version": "1.0.0"
     }
   ]

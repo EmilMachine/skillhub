@@ -4,7 +4,7 @@
   "description": "Example plugin demonstrating skill structure and best practices",
   "author": {
     "name": "Emil Machine",
-    "email": "slaskmachine@gmail.com"
+    "email": "slakmachine+skillhub@gmail.com"
   },
   "skills": [
     "./skills/hello"

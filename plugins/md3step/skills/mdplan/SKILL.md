@@ -1,10 +1,7 @@
 ---
 name: mdplan
 description: Generate step-by-step implementation plan from research
-args:
-  - name: path
-    description: Path to 1_research.md file
-    required: true
+argument-hint: path/to/1_research.md
 ---
 
 **TERSE MODE:** Minimal output. Bullet points. Technical language.

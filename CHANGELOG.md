@@ -2,7 +2,26 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
-## [Unreleased]
+## [1.1.0] - 2026-05-21
+
+**Added:**
+- dev-essentials v1.0.0 - Dev workflow essentials: project setup, code review, pro/con analysis
+  - `/setup` - Bootstrap project with agent config files and private prompt dirs; idempotent
+  - `/codereview <branch>` - Fetch branch diff and write terse major/minor/nit review to `mycodereviews/`
+  - `/procon3 <topic>` - Find 3 alternatives with pros/cons inline; no file write
+  - `/pc3 <topic>` - Alias for `/procon3`
+  - Bash scripts handle all git/fs ops; Claude handles review/analysis
+
+**Changed:**
+- All skills: replaced unsupported `args:` list frontmatter with `argument-hint` string
+- codereview, setup: added `allowed-tools: Bash(bash *<script>*)` for auto-approval
+- `.claude/plugin-verification.md`: added frontmatter field reference table, validator false-positive note
+- `.claude/scripts-use.md`: documented `allowed-tools` pattern syntax and caveats
+
+**Plugins:**
+- dev-essentials v1.0.0
+- md3step v1.0.0
+- example-plugin v1.0.0
 
 ## [1.0.0] - 2026-05-20
 

@@ -2,6 +2,18 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.2.0] - 2026-05-21
+
+**Added:**
+- dev-essentials v1.1.0: `issue` skill — two-phase: Claude populates fields from conversation context, Bash creates via gh/curl/prefill-URL; auto-labels `skillhub-bug`
+
+**Plugins:**
+- dev-essentials v1.1.0
+- md3step v1.0.0
+- example-plugin v1.0.0
+
+---
+
 ## [1.1.0] - 2026-05-21
 
 **Added:**

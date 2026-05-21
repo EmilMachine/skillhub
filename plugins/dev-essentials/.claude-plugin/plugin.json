@@ -1,6 +1,6 @@
 {
   "name": "dev-essentials",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Dev workflow essentials: project setup, code review, pro/con analysis",
   "author": {
     "name": "Emil",
@@ -10,6 +10,7 @@
     "./skills/setup",
     "./skills/codereview",
     "./skills/procon3",
-    "./skills/pc3"
+    "./skills/pc3",
+    "./skills/issue"
   ]
 }

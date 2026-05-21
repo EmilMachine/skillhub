@@ -33,6 +33,34 @@ Add to YAML frontmatter to auto-approve specific Bash invocations (no permission
 - Use scripts only for deterministic work
 - Performance: dozens of skills OK (on-demand loading)
 
+## Passing LLM-generated content to scripts
+
+**Multi-line body → stdin via quoted heredoc** (prevents variable expansion):
+```bash
+ISSUE_TITLE="<TITLE>" bash "$0/script.sh" <<'EOF'
+<multi-line body>
+EOF
+```
+
+**Single-line strings with special chars → env var, not positional arg**
+- Positional args break if the value contains `"` or unbalanced quotes
+- Env var: `ISSUE_TITLE="<TITLE>" bash "$0/script.sh"` → script reads `$ISSUE_TITLE`
+
+**Build JSON in script → `jq --arg`** (handles all escaping, no injection risk):
+```bash
+jq -n --arg title "$TITLE" --arg body "$BODY" \
+  '{"title":$title,"body":$body}'
+```
+
+**Parse JSON → `jq -r`**, not python3: `jq -r '.html_url'`
+
+**URL-encode → `jq @uri`**:
+```bash
+jq -rn --arg t "$TITLE" '"title=" + ($t|@uri)'
+```
+
+**`head -n -1` is GNU-only** — use `sed '$d'` to strip last line on macOS/BSD.
+
 ## Sources
 - [Official Docs](https://code.claude.com/docs/en/skills)
 - [Practical Guide 2026](https://dev.to/muhammad_moeed/claude-code-skills-a-practical-guide-for-2026-3f6p)

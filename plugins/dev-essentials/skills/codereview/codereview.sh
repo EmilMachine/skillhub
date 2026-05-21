@@ -8,15 +8,19 @@ if [ -z "$BRANCH" ]; then
 fi
 
 mkdir -p mycodereviews
-
-git fetch origin "$BRANCH" 2>/dev/null || {
-  if [ -z "$(git branch --list "$BRANCH")" ]; then
-    echo "❌ Branch not found locally or remotely. Run: git fetch origin $BRANCH"
-    exit 1
-  fi
-}
+[ -f mycodereviews/.gitignore ] || echo '*' > mycodereviews/.gitignore
 
 DEFAULT=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|.*/||')
 DEFAULT="${DEFAULT:-main}"
 
-git diff "$DEFAULT".."$BRANCH"
+if git fetch origin "$BRANCH" 2>/dev/null; then
+  BRANCH_REF="origin/$BRANCH"
+else
+  if [ -z "$(git branch --list "$BRANCH")" ]; then
+    echo "❌ Branch not found locally or remotely. Run: git fetch origin $BRANCH"
+    exit 1
+  fi
+  BRANCH_REF="$BRANCH"
+fi
+
+git diff "origin/$DEFAULT".."$BRANCH_REF"

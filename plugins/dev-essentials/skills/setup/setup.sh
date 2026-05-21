@@ -17,14 +17,12 @@ grep -qxF 'LOCAL_AGENTS.md' "$ROOT/.gitignore" 2>/dev/null || echo 'LOCAL_AGENTS
 <short project description>
 
 ## Commands
-- Run tests: `uv run pytest`
-- Lint: `uv run ruff check`
-- Format: `uv run ruff format`
+- Run tests: `<test command>`
+- Lint: `<lint command>`
+- Build: `<build command>`
 
 ## Conventions
-- Use `uv run` to execute Python — never call `python` or `pip` directly
-- All new code goes through `src/`; tests mirror the structure under `tests/`
-- Prefer `polars` over `pandas` for dataframe work
+<coding conventions>
 
 ## Architecture
 <key modules and their responsibilities>
@@ -34,7 +32,7 @@ EOF
 
 [ -f "$ROOT/CLAUDE.md" ] || cat > "$ROOT/CLAUDE.md" <<'EOF'
 Read AGENTS.md for full project instructions.
-If LOCAL_AGENTS.md exists, read it for local environment settings (Python interpreter, paths).
+If LOCAL_AGENTS.md exists, read it for local environment settings.
 EOF
 
 [ -f "$ROOT/opencode.json" ] || cat > "$ROOT/opencode.json" <<'EOF'
@@ -46,14 +44,13 @@ EOF
 [ -f "$ROOT/LOCAL_AGENTS.md.example" ] || cat > "$ROOT/LOCAL_AGENTS.md.example" <<'EOF'
 # Local Environment (copy this file to LOCAL_AGENTS.md and fill in)
 
-## Python
-- Package manager: uv | poetry | conda | pip
-- Run Python as: `uv run python` | `conda run -n <env> python` | `python`
-- Conda env (if applicable): <env name or n/a>
+## Runtime
+- Language/runtime: <e.g. node 20, python 3.12, go 1.22>
+- Run commands as: <e.g. npm run, uv run, go run>
 
 ## Paths
 - Repo root: /path/to/repo
-- Data dir: /path/to/data  (or n/a)
+- Data dir: /path/to/data (or n/a)
 
 ## Personal preferences
 - (optional — IDE, debug flags, etc.)
@@ -62,16 +59,14 @@ EOF
 [ -f "$ROOT/LOCAL_AGENTS.md" ] || cat > "$ROOT/LOCAL_AGENTS.md" <<'EOF'
 # Local Environment
 
-## Python
-- Package manager: uv
-- Run Python as: `uv run python`
-- Run scripts as: `uv run <script>`
-- Conda env (if applicable): n/a
+## Runtime
+- Language/runtime: <fill in>
+- Run commands as: <fill in>
 
 ## Paths
-- Repo root: /Users/<you>/code/<project>
-- Data dir: /data/<project>
+- Repo root: <fill in>
+- Data dir: <fill in>
 
 ## Personal preferences
-- <anything machine-specific>
+- <fill in>
 EOF

@@ -7,6 +7,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [
 **Added:**
 - dev-essentials v1.1.0: `issue` skill — two-phase: Claude populates fields from conversation context, Bash creates via gh/curl/prefill-URL; auto-labels `skillhub-bug`
 - dev-essentials v1.1.0: `cleanup` skill — analyse path for dead code, unused tests, redundant logic, refactor opportunities, outdated docs; writes report to `myreports/cleanup-<label>.md`
+- dev-essentials v1.1.0: `secure` skill — OWASP Top 10 (2025) security audit; runs semgrep/gitleaks/pip-audit/grype if available, falls back to grep patterns; severity-ranked report to `myreports/secure-<label>.md`
 
 **Changed:**
 - dev-essentials: renamed `mycodereviews/` → `myreports/` across setup.sh, codereview.sh, and SKILL.md

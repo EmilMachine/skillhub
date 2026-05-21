@@ -12,6 +12,7 @@
     "./skills/procon3",
     "./skills/pc3",
     "./skills/issue",
-    "./skills/cleanup"
+    "./skills/cleanup",
+    "./skills/secure"
   ]
 }

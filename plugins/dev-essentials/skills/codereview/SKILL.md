@@ -1,6 +1,6 @@
 ---
 name: codereview
-description: Fetch a branch and write a terse major/minor/nit code review to mycodereviews/
+description: Fetch a branch and write a terse major/minor/nit code review to myreports/
 argument-hint: <branch>
 allowed-tools: Bash(bash *codereview.sh*)
 ---
@@ -14,5 +14,5 @@ allowed-tools: Bash(bash *codereview.sh*)
    - **Major:** breaking/correctness issues
    - **Minor:** code quality, naming, tests
    - **Nit:** style, cosmetic
-4. Write review to `mycodereviews/$ARGUMENTS.md` (create dir if needed)
-5. Output: "✅ Review written to mycodereviews/$ARGUMENTS.md"
+4. Write review to `myreports/codereview-$ARGUMENTS.md` (create dir if needed)
+5. Output: "✅ Review written to myreports/codereview-$ARGUMENTS.md"

@@ -3,10 +3,10 @@ set -euo pipefail
 
 ROOT="${1:-$PWD}"
 
-mkdir -p "$ROOT/myprompts" "$ROOT/mycodereviews"
+mkdir -p "$ROOT/myprompts" "$ROOT/myreports"
 
 [ -f "$ROOT/myprompts/.gitignore" ] || echo '*' > "$ROOT/myprompts/.gitignore"
-[ -f "$ROOT/mycodereviews/.gitignore" ] || echo '*' > "$ROOT/mycodereviews/.gitignore"
+[ -f "$ROOT/myreports/.gitignore" ] || echo '*' > "$ROOT/myreports/.gitignore"
 
 grep -qxF 'LOCAL_AGENTS.md' "$ROOT/.gitignore" 2>/dev/null || echo 'LOCAL_AGENTS.md' >> "$ROOT/.gitignore"
 

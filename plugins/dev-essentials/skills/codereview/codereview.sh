@@ -7,8 +7,8 @@ if [ -z "$BRANCH" ]; then
   exit 1
 fi
 
-mkdir -p mycodereviews
-[ -f mycodereviews/.gitignore ] || echo '*' > mycodereviews/.gitignore
+mkdir -p myreports
+[ -f myreports/.gitignore ] || echo '*' > myreports/.gitignore
 
 DEFAULT=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|.*/||')
 DEFAULT="${DEFAULT:-main}"

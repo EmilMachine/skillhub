@@ -6,6 +6,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [
 
 **Added:**
 - dev-essentials v1.1.0: `issue` skill — two-phase: Claude populates fields from conversation context, Bash creates via gh/curl/prefill-URL; auto-labels `skillhub-bug`
+- dev-essentials v1.1.0: `cleanup` skill — analyse path for dead code, unused tests, redundant logic, refactor opportunities, outdated docs; writes report to `myreports/cleanup-<label>.md`
+
+**Changed:**
+- dev-essentials: renamed `mycodereviews/` → `myreports/` across setup.sh, codereview.sh, and SKILL.md
+- dev-essentials: `/codereview` now writes to `myreports/codereview-<branch>.md`
 
 **Plugins:**
 - dev-essentials v1.1.0

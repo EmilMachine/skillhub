@@ -7,6 +7,7 @@
 ├── .claude-plugin/marketplace.json
 ├── plugins/<name>/
 │   ├── .claude-plugin/plugin.json
+│   ├── .codex-plugin/plugin.json   # Codex compatibility (mirrors .claude-plugin/)
 │   ├── README.md
 │   └── skills/<skillname>/SKILL.md
 ├── CLAUDE.md
@@ -24,8 +25,10 @@
 
 **Plugin:**
 - [ ] `.claude-plugin/plugin.json` exists (NOT root PLUGIN.json)
+- [ ] `.codex-plugin/plugin.json` exists and mirrors `.claude-plugin/plugin.json`
 - [ ] Fields: name, version, description, author{name,email}, skills[]
 - [ ] Skills paths: `"./skills/<name>"` (directories, not .md files)
+- [ ] `.opencode/skills/<skillname>` symlink exists for every skill in the plugin
 - [ ] README.md: Skills, Workflow, Features, Installation
 
 **Skill:**
@@ -48,6 +51,7 @@
 
 # Verify
 ls -la plugins/<name>/.claude-plugin/plugin.json
+ls -la plugins/<name>/.codex-plugin/plugin.json
 cat plugins/<name>/.claude-plugin/plugin.json | jq .
 find plugins/<name>/skills -name "SKILL.md"
 
@@ -151,8 +155,12 @@ cp -r templates/plugin-template plugins/<name>
 
 # Edit:
 # - .claude-plugin/plugin.json (name, version, author, skills)
+# - .codex-plugin/plugin.json  (copy of above for Codex compatibility)
 # - skills/<skillname>/SKILL.md
 # - README.md
+
+# Add OpenCode symlink for each skill
+ln -s ../../plugins/<name>/skills/<skillname> .opencode/skills/<skillname>
 
 # Add to marketplace.json plugins[]
 
@@ -209,6 +217,20 @@ find plugins -name "SKILL.md" -exec head -n 10 {} \;
 
 # Skills paths
 find plugins -name "plugin.json" -exec jq -r ".skills[]" {} \;
+
+# Codex manifests present for every plugin
+for d in plugins/*/; do
+  [ -f "$d.claude-plugin/plugin.json" ] && [ ! -f "$d.codex-plugin/plugin.json" ] \
+    && echo "MISSING .codex-plugin/plugin.json: $d"
+done
+
+# OpenCode .opencode/skills/ symlinks — every skill must have one
+find plugins -name "plugin.json" -exec jq -r '.skills[]' {} \; | sed 's|^\./||' | while read skill_rel; do
+  plugin_dir=$(dirname "$(find plugins -path "*/$skill_rel/../plugin.json" 2>/dev/null | head -1)")
+  skill_name=$(basename "$skill_rel")
+  [ ! -L ".opencode/skills/$skill_name" ] \
+    && echo "MISSING .opencode/skills/$skill_name symlink"
+done
 
 # Structure
 tree -L 4 plugins/

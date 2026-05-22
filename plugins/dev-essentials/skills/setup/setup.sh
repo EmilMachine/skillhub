@@ -8,7 +8,14 @@ mkdir -p "$ROOT/myprompts" "$ROOT/myreports"
 [ -f "$ROOT/myprompts/.gitignore" ] || echo '*' > "$ROOT/myprompts/.gitignore"
 [ -f "$ROOT/myreports/.gitignore" ] || echo '*' > "$ROOT/myreports/.gitignore"
 
-grep -qxF 'LOCAL_AGENTS.md' "$ROOT/.gitignore" 2>/dev/null || echo 'LOCAL_AGENTS.md' >> "$ROOT/.gitignore"
+if ! grep -qxF 'LOCAL_AGENTS.md' "$ROOT/.gitignore" 2>/dev/null; then
+  printf '\nLOCAL_AGENTS.md\n' >> "$ROOT/.gitignore"
+fi
+
+# Migrate existing CLAUDE.md to AGENTS.md if needed
+if [ -f "$ROOT/CLAUDE.md" ] && [ ! -f "$ROOT/AGENTS.md" ]; then
+  cp "$ROOT/CLAUDE.md" "$ROOT/AGENTS.md"
+fi
 
 [ -f "$ROOT/AGENTS.md" ] || cat > "$ROOT/AGENTS.md" <<'EOF'
 # Project Instructions
@@ -30,7 +37,7 @@ grep -qxF 'LOCAL_AGENTS.md' "$ROOT/.gitignore" 2>/dev/null || echo 'LOCAL_AGENTS
 ## For local environment settings, see LOCAL_AGENTS.md (gitignored)
 EOF
 
-[ -f "$ROOT/CLAUDE.md" ] || cat > "$ROOT/CLAUDE.md" <<'EOF'
+cat > "$ROOT/CLAUDE.md" <<'EOF'
 Read AGENTS.md for full project instructions.
 If LOCAL_AGENTS.md exists, read it for local environment settings.
 EOF
@@ -47,13 +54,6 @@ EOF
 ## Runtime
 - Language/runtime: <e.g. node 20, python 3.12, go 1.22>
 - Run commands as: <e.g. npm run, uv run, go run>
-
-## Paths
-- Repo root: /path/to/repo
-- Data dir: /path/to/data (or n/a)
-
-## Personal preferences
-- (optional — IDE, debug flags, etc.)
 EOF
 
 [ -f "$ROOT/LOCAL_AGENTS.md" ] || cat > "$ROOT/LOCAL_AGENTS.md" <<'EOF'
@@ -62,11 +62,4 @@ EOF
 ## Runtime
 - Language/runtime: <fill in>
 - Run commands as: <fill in>
-
-## Paths
-- Repo root: <fill in>
-- Data dir: <fill in>
-
-## Personal preferences
-- <fill in>
 EOF

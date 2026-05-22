@@ -19,6 +19,13 @@ Add to YAML frontmatter to auto-approve specific Bash invocations (no permission
 - Restriction of unlisted tools is not currently enforced — treat as an approval hint, not a security boundary ([#18837](https://github.com/anthropics/claude-code/issues/18837))
 - The built-in SKILL.md validator incorrectly flags `allowed-tools` as unsupported — known false positive ([#25380](https://github.com/anthropics/claude-code/issues/25380))
 
+**UX Tip — Permission prompts:**
+Add a "Permission note" after the YAML frontmatter to explain why the skill needs elevated permissions and how users can configure their settings to skip prompts:
+```markdown
+**Permission note:** This skill runs Bash to create issues. You may be prompted to allow Bash execution. To skip future prompts, add to `.claude/settings.json`: `"Bash(bash *create_issue.sh*)"`
+```
+This improves discoverability and helps users understand the permission model.
+
 **2. Shell snippets**
 ```markdown
 !`command` - runs before Claude sees prompt

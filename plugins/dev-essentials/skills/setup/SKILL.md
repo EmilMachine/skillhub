@@ -5,6 +5,8 @@ argument-hint: <project-root-path> (optional)
 allowed-tools: Bash(bash *setup.sh*)
 ---
 
+**Permission note:** This skill runs Bash to bootstrap project files. You may be prompted to allow Bash execution. To skip future prompts, add to `.claude/settings.json`: `"Bash(bash *setup.sh*)"`
+
 **IMMEDIATE EXIT if confirmation needed:**
 - Runs setup.sh with optional `$ARGUMENTS` as root path
 - Idempotent: skips files/dirs that already exist

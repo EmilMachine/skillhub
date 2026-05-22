@@ -5,6 +5,8 @@ argument-hint: "[optional user summary]"
 allowed-tools: Bash(bash *create_issue.sh*)
 ---
 
+**Permission note:** This skill runs Bash to create issues. You may be prompted to allow Bash execution. To skip future prompts, add to `.claude/settings.json`: `"Bash(bash *create_issue.sh*)"`
+
 **Phase 1 — Populate fields (Claude):**
 1. Capture `$ARGUMENTS` as `user_summary` (omit field if empty)
 2. Scan conversation for most recent failure: plugin name, skill name, command run, verbatim error

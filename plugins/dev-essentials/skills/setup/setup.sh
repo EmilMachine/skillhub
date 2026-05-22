@@ -9,7 +9,7 @@ mkdir -p "$ROOT/myprompts" "$ROOT/myreports"
 [ -f "$ROOT/myreports/.gitignore" ] || echo '*' > "$ROOT/myreports/.gitignore"
 
 if ! grep -qxF 'LOCAL_AGENTS.md' "$ROOT/.gitignore" 2>/dev/null; then
-  printf '\nLOCAL_AGENTS.md\n' >> "$ROOT/.gitignore"
+  printf '\n\n# LOCAL AGENTS\nLOCAL_AGENTS.md\n' >> "$ROOT/.gitignore"
 fi
 
 # Migrate existing CLAUDE.md to AGENTS.md if needed

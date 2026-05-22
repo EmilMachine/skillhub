@@ -97,6 +97,12 @@ plugins/your-plugin/
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
+## Other Code Agents
+
+For install and usage with other code agents see:
+- [README_CODEX.md](./README_CODEX.md) — OpenAI Codex
+- [README_OPENCODE.md](./README_OPENCODE.md) — OpenCode
+
 ## Resources
 
 - [CHANGELOG.md](./CHANGELOG.md)

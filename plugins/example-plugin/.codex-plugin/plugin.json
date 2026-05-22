@@ -1,0 +1,12 @@
+{
+  "name": "example-plugin",
+  "version": "1.0.0",
+  "description": "Example plugin demonstrating skill structure and best practices",
+  "author": {
+    "name": "Emil Machine",
+    "email": "slakmachine+skillhub@gmail.com"
+  },
+  "skills": [
+    "./skills/hello"
+  ]
+}

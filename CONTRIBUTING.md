@@ -2,71 +2,51 @@
 
 ## Process
 
-1. Fork repo
-2. Create plugin in `plugins/`
-3. Add to `.claude-plugin/marketplace.json`
-4. Submit PR with brief description
+1. Fork → create plugin in `plugins/` → add to `.claude-plugin/marketplace.json` → PR
 
-## Requirements
-
-**Must Have:**
-- README.md (usage + example)
-- PLUGIN.json (valid metadata)
-- ≥1 SKILL.md (YAML frontmatter)
-
-**Should Have:**
-- Prerequisites/dependencies
-- Semver version
-- Multiple examples
-
-**Skip:**
-- Automated tests
-- Multi-language docs
-
-## Structure
-
-Copy `templates/plugin-template/`:
+## Plugin Structure
 
 ```
 plugins/your-plugin/
 ├── README.md
-├── PLUGIN.json
-└── skills/your-skill.md
+├── .claude-plugin/plugin.json
+├── .codex-plugin/plugin.json      # mirror of .claude-plugin/plugin.json
+└── skills/your-skill/
+    └── SKILL.md
 ```
 
-## Add to Marketplace
+Add an `.opencode/skills/<skillname>` symlink for each skill:
+```bash
+ln -s ../../plugins/your-plugin/skills/your-skill .opencode/skills/your-skill
+```
 
-Update `.claude-plugin/marketplace.json`:
+Full checklist: [.claude/plugin-verification.md](./.claude/plugin-verification.md)
 
+## Marketplace Entry
+
+`.claude-plugin/marketplace.json`:
 ```json
-{
-  "name": "your-plugin",
-  "source": "./plugins/your-plugin",
-  "description": "Brief description",
-  "version": "1.0.0"
-}
+{ "name": "your-plugin", "source": "./plugins/your-plugin", "description": "...", "version": "1.0.0" }
 ```
+
+## SKILL.md
+
+YAML frontmatter + terse bullet instructions. Scripts are optional — see [.claude/scripts-use.md](./.claude/scripts-use.md).
 
 ## Testing
 
 ```bash
-claude plugin add /path/to/skillhub
-claude plugin list
-# Test skill: /your-skill-name
+/plugin marketplace add /path/to/skillhub
+/plugin install your-plugin
+/reload-plugins
 ```
-
-## Best Practices
-
-- Keep SKILL.md <500 lines
-- Include concrete examples
-- Test locally before PR
 
 ## PR Guidelines
 
 - One plugin per PR
-- Brief description
-- Note dependencies
+- Test locally first
+- Note any dependencies
 
 ---
 
-Owner commits directly. Community PRs merged when quality bar met.
+Owner merges directly. Community PRs merged when quality bar met.

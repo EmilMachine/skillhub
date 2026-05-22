@@ -12,29 +12,22 @@ if ! grep -qxF 'LOCAL_AGENTS.md' "$ROOT/.gitignore" 2>/dev/null; then
   printf '\n\n# LOCAL AGENTS\nLOCAL_AGENTS.md\n' >> "$ROOT/.gitignore"
 fi
 
-# Migrate existing CLAUDE.md to AGENTS.md if needed
+# Migrate existing CLAUDE.md to AGENTS.md if needed unless AGENTS.md also exists.
 if [ -f "$ROOT/CLAUDE.md" ] && [ ! -f "$ROOT/AGENTS.md" ]; then
   cp "$ROOT/CLAUDE.md" "$ROOT/AGENTS.md"
 fi
 
 [ -f "$ROOT/AGENTS.md" ] || cat > "$ROOT/AGENTS.md" <<'EOF'
-# Project Instructions
-
-## Overview
-<short project description>
+# Agent Instructions
 
 ## Commands
-- Run tests: `<test command>`
-- Lint: `<lint command>`
-- Build: `<build command>`
+- **Run**: `<run command>`
 
 ## Conventions
-<coding conventions>
+- **<topic>**: <convention description>
 
-## Architecture
-<key modules and their responsibilities>
-
-## For local environment settings, see LOCAL_AGENTS.md (gitignored)
+## Constraints
+- Don't <constraint>
 EOF
 
 cat > "$ROOT/CLAUDE.md" <<'EOF'

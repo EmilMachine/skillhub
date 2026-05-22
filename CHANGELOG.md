@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.2.1] - 2026-05-22
+
+**Fixed:**
+- dev-essentials v1.1.1: `setup` — guard `.gitignore` append with explicit `if !` check and `printf` to prevent concatenation when file lacks trailing newline
+
+**Plugins:**
+- dev-essentials v1.1.1
+
+---
+
 ## [1.2.0] - 2026-05-21
 
 **Added:**

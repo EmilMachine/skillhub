@@ -1,8 +1,10 @@
 # Skillhub - Claude Code Plugin Marketplace
 
-**Full validation:** [.claude/plugin-verification.md](./.claude/plugin-verification.md)
+**Full validation:** [AGENTS/plugin-verification.md](./AGENTS/plugin-verification.md)
 
-**Use of scripts in skills** [.claude/scripts-use.md](./.claude/scripts-use.md)
+**Use of scripts in skills** [AGENTS/scripts-use.md](./AGENTS/scripts-use.md)
+
+**Use of changelog** [AGENTS/changelog.md](./AGENTS/changelog.md)
 
 ## Structure
 
@@ -32,4 +34,4 @@ plugins/<name>/
 4. Update versions (all locations)
 5. Document in CHANGELOG.md
 
-**Details:** [.claude/plugin-verification.md](./.claude/plugin-verification.md)
+**Details:** [AGENTS/plugin-verification.md](./AGENTS/plugin-verification.md)

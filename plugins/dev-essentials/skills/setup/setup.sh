@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="${1:-$PWD}"
 
-mkdir -p "$ROOT/myprompts" "$ROOT/myreports"
+mkdir -p "$ROOT/myprompts" "$ROOT/myreports" "$ROOT/AGENTS"
 
 [ -f "$ROOT/myprompts/.gitignore" ] || echo '*' > "$ROOT/myprompts/.gitignore"
 [ -f "$ROOT/myreports/.gitignore" ] || echo '*' > "$ROOT/myreports/.gitignore"

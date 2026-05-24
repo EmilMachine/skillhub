@@ -2,9 +2,9 @@
 set -uo pipefail
 
 TITLE="${ISSUE_TITLE:?ISSUE_TITLE env var required}"
-BODY=$(cat)
+BODY="${ISSUE_TEXT:?ISSUE_TEXT env var required}"
 REPO="EmilMachine/skillhub"
-LABEL="skillhub-bug"
+LABEL="bug-agentmade"
 
 # --- Input validation (failures are directed at Claude, not the end user) ---
 ERRORS=()
@@ -35,7 +35,7 @@ fi
 
 BODY_FILE=$(mktemp)
 printf '%s' "$BODY" > "$BODY_FILE"
-trap 'rm -f "$BODY_FILE"' EXIT
+trap 'rm -f "$BODY_FILE"; echo ""; echo "- Want to write your own issue?"; echo "  https://github.com/EmilMachine/skillhub/issues/new"' EXIT
 
 # Try gh
 if ! command -v gh >/dev/null 2>&1; then
@@ -52,7 +52,7 @@ if [ -z "${GITHUB_TOKEN:-}" ]; then
   echo "⚠️ GITHUB_TOKEN not set, falling back to URL"
 else
   PAYLOAD=$(jq -n --arg title "$TITLE" --arg body "$BODY" \
-    '{"title":$title,"body":$body,"labels":["skillhub-bug"]}')
+    '{"title":$title,"body":$body,"labels":["bug-agentmade"]}')
   RESULT=$(curl -s -w "\n%{http_code}" -X POST \
     -H "Authorization: token $GITHUB_TOKEN" \
     -H "Content-Type: application/json" \
@@ -70,7 +70,7 @@ fi
 # URL fallback
 URL="https://github.com/EmilMachine/skillhub/issues/new?$(
   jq -rn --arg t "$TITLE" --arg b "$BODY" \
-    '"title=" + ($t|@uri) + "&body=" + ($b|@uri) + "&labels=skillhub-bug"'
+    '"title=" + ($t|@uri) + "&body=" + ($b|@uri) + "&labels=bug-agentmade"'
 )"
 echo "⚠️ Could not create issue automatically. Open manually:"
 echo "$URL"

@@ -1,6 +1,6 @@
 ---
 name: issue
-description: Create a GitHub issue from conversation context; auto-labels skillhub-bug
+description: Create a GitHub issue from conversation context; auto-labels bug-agentmade
 argument-hint: "[optional user summary]"
 allowed-tools: Bash(bash *create_issue.sh*)
 ---
@@ -22,14 +22,15 @@ allowed-tools: Bash(bash *create_issue.sh*)
      trace: <relevant raw extracts; mark gaps between sections with ...>
      ```
 
+**Script path:** The harness injects `Base directory for this skill: <path>` at the top of these instructions — use that path as `BASE_DIR` for all script references below.
+
 **Phase 2 — Create issue (Bash):**
 
-Pass TITLE via env var (safe for quotes/special chars), BODY via stdin heredoc:
+Pass TITLE and BODY via env vars (safe for quotes/special chars):
 ```bash
-ISSUE_TITLE="<TITLE>" bash "$0/create_issue.sh" <<'BODYEOF'
-<BODY content>
-BODYEOF
+ISSUE_TITLE="<TITLE>" ISSUE_TEXT="<BODY content>" bash "<BASE_DIR>/create_issue.sh"
 ```
+(substitute the actual BASE_DIR path)
 
 **If exit code is 2 (FORMAT ERROR):**
 - Read the error output — each `- body missing required field: '<field>:'` line names a missing field

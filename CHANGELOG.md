@@ -2,6 +2,31 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.2.4] - 2026-05-24
+
+**Fixed:**
+- dev-essentials v1.1.3: `setup` — SKILL.md now uses harness-injected `BASE_DIR` for script path instead of fragile `$(dirname "")` which resolved to the wrong directory
+
+**Changed:**
+- Moved `.claude/plugin-verification.md` and `.claude/scripts-use.md` to `AGENTS/`
+- Added `AGENTS/changelog.md` — terse Keep a Changelog + Semver reference for agents
+- Updated all references in `CLAUDE.md` and `CONTRIBUTING.md`
+
+**Plugins:**
+- dev-essentials v1.1.3
+
+---
+
+## [1.2.3] - 2026-05-24
+
+**Changed:**
+- dev-essentials v1.1.2: `issue` — body passed via `ISSUE_TEXT` env var instead of stdin heredoc; always prints manual issue link via EXIT trap
+
+**Plugins:**
+- dev-essentials v1.1.2
+
+---
+
 ## [1.2.2] - 2026-05-24
 
 **Changed:**

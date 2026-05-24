@@ -40,18 +40,31 @@ This improves discoverability and helps users understand the permission model.
 - Use scripts only for deterministic work
 - Performance: dozens of skills OK (on-demand loading)
 
+## Script path resolution
+
+**Never use `$0` or `$(dirname "$0")` in SKILL.md instructions.** When Claude runs a Bash command, `$0` is the shell interpreter name (`bash`), not the SKILL.md path — so `dirname "$0"` resolves to `.`, not the skill directory.
+
+**Correct pattern:** The harness prepends a `Base directory for this skill: <path>` header to every skill before Claude reads it. Instruct Claude to use that path:
+
+```markdown
+**Script path:** The harness injects `Base directory for this skill: <path>` at the top of these
+instructions — use that path as `BASE_DIR` for all script references below.
+```
+
+Then reference scripts as `"<BASE_DIR>/script.sh"` (Claude substitutes the actual path at runtime).
+
 ## Passing LLM-generated content to scripts
 
 **Multi-line body → stdin via quoted heredoc** (prevents variable expansion):
 ```bash
-ISSUE_TITLE="<TITLE>" bash "$0/script.sh" <<'EOF'
+ISSUE_TITLE="<TITLE>" bash "<BASE_DIR>/script.sh" <<'EOF'
 <multi-line body>
 EOF
 ```
 
 **Single-line strings with special chars → env var, not positional arg**
 - Positional args break if the value contains `"` or unbalanced quotes
-- Env var: `ISSUE_TITLE="<TITLE>" bash "$0/script.sh"` → script reads `$ISSUE_TITLE`
+- Env var: `ISSUE_TITLE="<TITLE>" bash "<BASE_DIR>/script.sh"` → script reads `$ISSUE_TITLE`
 
 **Build JSON in script → `jq --arg`** (handles all escaping, no injection risk):
 ```bash

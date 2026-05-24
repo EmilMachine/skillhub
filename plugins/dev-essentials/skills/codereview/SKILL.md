@@ -5,10 +5,12 @@ argument-hint: <branch>
 allowed-tools: Bash(bash *codereview.sh*)
 ---
 
+**Script path:** The harness injects `Base directory for this skill: <path>` at the top of these instructions — use that path as `BASE_DIR` for all script references below.
+
 **IMMEDIATE EXIT if no argument:**
 - If `$ARGUMENTS` is empty: output "❌ Error: Branch name required. Usage: /codereview <branch>" and STOP.
 
-1. Run `bash "$0/codereview.sh" $ARGUMENTS` — captures diff or error message
+1. Run `bash "<BASE_DIR>/codereview.sh" $ARGUMENTS` — captures diff or error message (substitute the actual BASE_DIR path)
 2. If script exits non-zero: print the suggested git command and STOP
 3. Review the diff output — terse format:
    - **Major:** breaking/correctness issues

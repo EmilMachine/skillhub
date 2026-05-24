@@ -20,7 +20,7 @@ Add an `.opencode/skills/<skillname>` symlink for each skill:
 ln -s ../../plugins/your-plugin/skills/your-skill .opencode/skills/your-skill
 ```
 
-Full checklist: [.claude/plugin-verification.md](./.claude/plugin-verification.md)
+Full checklist: [AGENTS/plugin-verification.md](./AGENTS/plugin-verification.md)
 
 ## Marketplace Entry
 
@@ -31,7 +31,7 @@ Full checklist: [.claude/plugin-verification.md](./.claude/plugin-verification.m
 
 ## SKILL.md
 
-YAML frontmatter + terse bullet instructions. Scripts are optional — see [.claude/scripts-use.md](./.claude/scripts-use.md).
+YAML frontmatter + terse bullet instructions. Scripts are optional — see [AGENTS/scripts-use.md](./AGENTS/scripts-use.md).
 
 ## Testing
 

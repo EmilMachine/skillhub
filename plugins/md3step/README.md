@@ -18,11 +18,11 @@ Generate step-by-step implementation plan.
 - **Output:** `2_plan.md` with detailed implementation steps
 - **Usage:** `/mdplan path/to/1_research.md`
 
-### `/mdrefine`
+### `/mdupdate`
 Refine plan by integrating user's inline answers.
 - **Input:** `2_plan.md` with inline user edits
 - **Output:** Updates same file with answers worked into main text
-- **Usage:** `/mdrefine path/to/2_plan.md`
+- **Usage:** `/mdupdate path/to/2_plan.md`
 
 ### `/mdimplement`
 Execute the plan with testing and verification.
@@ -36,7 +36,7 @@ Execute the plan with testing and verification.
 2. Run `/mdresearch 0_context.md` → generates `1_research.md`
 3. Run `/mdplan 1_research.md` → generates `2_plan.md`
 4. Review plan, add inline questions/answers if needed
-5. Run `/mdrefine 2_plan.md` → integrates your edits (optional)
+5. Run `/mdupdate 2_plan.md` → integrates your edits (optional)
 6. Run `/mdimplement 2_plan.md` → generates `3_changelog.md` and implements changes
 
 ## Features
@@ -71,7 +71,7 @@ Execute the plan with testing and verification.
 - Never creates git commits
 - Attempts to fix failures, documents issues
 
-### /mdrefine
+### /mdupdate
 - Detects various answer formats (A:, Answer:, inline edits)
 - Updates plan in-place (same file)
 - Preserves original structure

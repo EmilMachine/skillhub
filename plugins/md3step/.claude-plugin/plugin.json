@@ -1,6 +1,6 @@
 {
   "name": "md3step",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Terse markdown research-plan-implement workflow",
   "author": {
     "name": "Emil",
@@ -9,7 +9,7 @@
   "skills": [
     "./skills/mdresearch",
     "./skills/mdplan",
-    "./skills/mdrefine",
+    "./skills/mdupdate",
     "./skills/mdimplement"
   ]
 }

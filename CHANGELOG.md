@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.2.2] - 2026-05-24
+
+**Changed:**
+- md3step v1.0.1: renamed `/mdrefine` → `/mdupdate`
+
+**Plugins:**
+- md3step v1.0.1
+
+---
+
 ## [1.2.1] - 2026-05-22
 
 **Fixed:**

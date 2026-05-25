@@ -1,5 +1,17 @@
 # Contributing
 
+## Setup & Use
+
+**Install pre-commit hook (one-time, per clone):**
+```bash
+ln -sf "$(git rev-parse --show-toplevel)/scripts/pre-commit.sh" .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+```
+
+**Dependency:** `jq` — `brew install jq` if missing.
+
+The hook validates `.claude-plugin` consistency and auto-syncs `.codex-plugin` and `.opencode/skills/` symlinks on every commit.
+
 ## Process
 
 1. Fork → create plugin in `plugins/` → add to `.claude-plugin/marketplace.json` → PR

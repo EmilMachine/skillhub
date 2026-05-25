@@ -5,6 +5,8 @@
 ```
 <repo>/
 ├── .claude-plugin/marketplace.json
+├── .codex-plugin/marketplace.json  # Codex marketplace manifest (mirrors .claude-plugin/)
+├── .opencode/skills/<skillname>    # Symlinks for OpenCode (one per skill)
 ├── plugins/<name>/
 │   ├── .claude-plugin/plugin.json
 │   ├── .codex-plugin/plugin.json   # Codex compatibility (mirrors .claude-plugin/)
@@ -18,6 +20,7 @@
 
 **Marketplace:**
 - [ ] `.claude-plugin/marketplace.json` valid JSON
+- [ ] `.codex-plugin/marketplace.json` valid JSON and in sync with `.claude-plugin/marketplace.json`
 - [ ] `metadata.version` follows semver
 - [ ] All plugins in `plugins[]` array
 - [ ] Versions match individual plugin.json

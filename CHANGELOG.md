@@ -2,6 +2,29 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.3.0] - 2026-05-25
+
+**Added:**
+- dev-essentials v1.2.0: `/skillhub-update` skill — single command to update all installed plugins
+  - Detects tool context via env vars (`CLAUDECODE`, `OPENCODE_*`, `CODEX_*`) with process-name fallback
+  - Version diff: reads `installed_plugins.json` + marketplace cache to compare installed vs available
+  - Refreshes all marketplaces, re-diffs, shows summary table, updates stale plugins, reloads
+  - Handles non-Claude tools (OpenCode, Codex) with tool-specific guidance
+
+**Fixed:**
+- Added missing root-level `.codex-plugin/marketplace.json` (mirrors `.claude-plugin/marketplace.json` for Codex marketplace support)
+- `marketplace.json` plugin version entries were stale — bumped `md3step` to `1.0.1`, `dev-essentials` to `1.2.0`
+- `marketplace.json` metadata.version was `1.0.0` — synced to `1.3.0`
+- Updated `AGENTS/plugin-verification.md` structure diagram and checklist to include `.codex-plugin/marketplace.json` and `.opencode/skills/`
+
+**Changed:**
+- `CONTRIBUTING.md`: added pre-commit hook install instructions (`scripts/pre-commit.sh`)
+
+**Plugins:**
+- dev-essentials v1.2.0
+
+---
+
 ## [1.2.4] - 2026-05-24
 
 **Fixed:**

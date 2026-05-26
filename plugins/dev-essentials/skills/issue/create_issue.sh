@@ -11,7 +11,7 @@ ERRORS=()
 
 [[ -z "${TITLE// }" ]] && ERRORS+=("ISSUE_TITLE is blank")
 
-REQUIRED_FIELDS=(plugin skill situation complication trace)
+REQUIRED_FIELDS=(plugin skill situation complication error_type steps_to_reproduce)
 for field in "${REQUIRED_FIELDS[@]}"; do
   grep -qE "^${field}:" <<< "$BODY" || ERRORS+=("body missing required field: '${field}:'")
 done
@@ -28,10 +28,33 @@ if [[ ${#ERRORS[@]} -gt 0 ]]; then
   echo "  skill: <name>"
   echo "  situation: <one-line>"
   echo "  complication: <one-line>"
-  echo "  trace: <relevant extracts>"
+  echo "  error_type: <category>"
+  echo "  steps_to_reproduce: <numbered steps>"
   exit 2
 fi
 # ---------------------------------------------------------------------------
+
+# --- SCRUB — strip known secret shapes before posting ---
+scrub() {
+  local s="$1"
+  # Key=value credentials (Bearer, token=, api_key=, secret=, password=, Authorization:)
+  s=$(echo "$s" | sed -E "s/(Bearer |token=|api_?key=|secret=|password=|Authorization: )[^[:space:]\"'&,)]+/\1[REDACTED]/gi")
+  # Known token prefixes: GitHub (ghp/ghs/gho), OpenAI (sk-), Slack (xoxb/xoxp), AWS (AKIA)
+  s=$(echo "$s" | sed -E 's/\b(ghp|ghs|gho|sk-|xoxb|xoxp|AKIA)[A-Za-z0-9_-]{16,}/[TOKEN]/g')
+  # Emails
+  s=$(echo "$s" | sed -E 's/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/[EMAIL]/g')
+  # IPv4 addresses
+  s=$(echo "$s" | sed -E 's/\b([0-9]{1,3}\.){3}[0-9]{1,3}\b/[IP]/g')
+  # Absolute paths
+  s=$(echo "$s" | sed -E 's|/Users/[^[:space:]",]+|[PATH]|g')
+  s=$(echo "$s" | sed -E 's|/home/[^[:space:]",]+|[PATH]|g')
+  s=$(echo "$s" | sed -E 's|/root/[^[:space:]",]+|[PATH]|g')
+  # UUIDs
+  s=$(echo "$s" | sed -E 's/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/[UUID]/gi')
+  echo "$s"
+}
+BODY=$(scrub "$BODY")
+# -------------------------------------------------------
 
 BODY_FILE=$(mktemp)
 printf '%s' "$BODY" > "$BODY_FILE"
@@ -68,9 +91,10 @@ else
 fi
 
 # URL fallback
+# Note: /issues/new ignores the `labels` query param — it only works via issue templates.
 URL="https://github.com/EmilMachine/skillhub/issues/new?$(
   jq -rn --arg t "$TITLE" --arg b "$BODY" \
-    '"title=" + ($t|@uri) + "&body=" + ($b|@uri) + "&labels=bug-agentmade"'
+    '"title=" + ($t|@uri) + "&body=" + ($b|@uri)'
 )"
 echo "⚠️ Could not create issue automatically. Open manually:"
 echo "$URL"

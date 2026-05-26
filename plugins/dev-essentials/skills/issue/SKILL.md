@@ -8,8 +8,11 @@ allowed-tools: Bash(bash *create_issue.sh*)
 **Permission note:** This skill runs Bash to create issues. You may be prompted to allow Bash execution. To skip future prompts, add to `.claude/settings.json`: `"Bash(bash *create_issue.sh*)"`
 
 **Phase 1 — Populate fields (Claude):**
+
+**Redact before writing any field:** replace tokens/keys/passwords → `[TOKEN]`, emails → `[EMAIL]`, IPs → `[IP]`, absolute paths → `[PATH]`, UUIDs → `[UUID]`. No repo-specific names, env var values, or internal hostnames.
+
 1. Capture `$ARGUMENTS` as `user_summary` (omit field if empty)
-2. Scan conversation for most recent failure: plugin name, skill name, command run, verbatim error
+2. Scan conversation for most recent failure: plugin name, skill name, command run, error category
 3. Construct:
    - `TITLE`: `[issue] <skill>: <one-line error>`
    - `BODY` (one line each):
@@ -18,8 +21,9 @@ allowed-tools: Bash(bash *create_issue.sh*)
      skill: <name>
      user_summary: <$ARGUMENTS>
      situation: <one-line: what was attempted>
-     complication: <one-line: exact error or failure>
-     trace: <relevant raw extracts; mark gaps between sections with ...>
+     complication: <one-line: error or failure — no raw values>
+     error_type: <category: validation | auth | network | parse | other>
+     steps_to_reproduce: <concise numbered steps, generic — no internal specifics>
      ```
 
 **Script path:** The harness injects `Base directory for this skill: <path>` at the top of these instructions — use that path as `BASE_DIR` for all script references below.

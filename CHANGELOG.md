@@ -2,6 +2,26 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.3.2] - 2026-05-26
+
+**Added:**
+- md3step v1.1.0: `mdplan` now scans sibling `*.md` files (excluding `2_plan.md`) as a fallback — triggered only if open questions remain after drafting the plan; answers are folded directly into the relevant plan steps, with only still-unresolved questions surfaced in `# Open Questions`
+
+**Plugins:**
+- md3step v1.1.0
+
+---
+
+## [1.3.1] - 2026-05-26
+
+**Fixed:**
+- dev-essentials v1.2.1: `codereview.sh` — switched from two-dot to three-dot diff (`git diff main...branch`), eliminating false "removal" findings for commits that landed on main after the branch was cut
+
+**Plugins:**
+- dev-essentials v1.2.1
+
+---
+
 ## [1.3.0] - 2026-05-25
 
 **Added:**

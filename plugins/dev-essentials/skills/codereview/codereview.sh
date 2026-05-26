@@ -23,4 +23,4 @@ else
   BRANCH_REF="$BRANCH"
 fi
 
-git diff "origin/$DEFAULT".."$BRANCH_REF"
+git diff "origin/$DEFAULT"..."$BRANCH_REF"

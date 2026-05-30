@@ -2,6 +2,38 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.3.4] - 2026-05-30
+
+**Changed:**
+- dev-essentials v1.4.0: `skillhub-update` rewritten as modular script-only adapter architecture
+  - `upgrade.sh` is now a pure dispatcher: detects tool, sources `lib.sh`, routes to the matching `upgrade-<tool>.sh` adapter
+  - `lib.sh` — shared utilities: `_compare_versions`, `_print_table`, `_count_status`
+  - `upgrade-claude.sh` — full Claude Code cycle: diff → marketplace refresh → re-diff → table → update → report; all via `claude plugin` Bash calls
+  - `upgrade-codex.sh` — Codex adapter: tries `codex plugin update --all`, falls back to per-plugin update
+  - `upgrade-opencode.sh` — OpenCode adapter: same pattern as Codex
+  - Eliminates recursive sub-skill invocations that caused repeated permission prompts per iteration
+  - Removes `/reload-plugins` (unknown command); replaced with explicit restart message
+  - Adding support for a new tool = one new `upgrade-<tool>.sh` file, zero changes elsewhere
+  - `SKILL.md` reduced to three lines: run script, stream output
+
+**Plugins:**
+- dev-essentials v1.4.0
+
+---
+
+## [1.3.3] - 2026-05-30
+
+**Added:**
+- dev-essentials v1.3.0: `/gitstats` skill — git contributor/file stats with three modes:
+  - No arg / sort key (`LINES`/`FILES`/`LAST`) → all contributors ranked
+  - Partial contributor name → top-10 files for that contributor
+  - File path → contributor breakdown for that file
+
+**Plugins:**
+- dev-essentials v1.3.0
+
+---
+
 ## [1.3.2] - 2026-05-26
 
 **Added:**

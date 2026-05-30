@@ -1,6 +1,6 @@
 {
   "name": "dev-essentials",
-  "version": "1.2.1",
+  "version": "1.4.0",
   "description": "Dev workflow essentials: project setup, code review, cleanup analysis, pro/con",
   "author": {
     "name": "Emil",
@@ -14,6 +14,7 @@
     "./skills/issue",
     "./skills/cleanup",
     "./skills/secure",
-    "./skills/skillhub-update"
+    "./skills/skillhub-update",
+    "./skills/gitstats"
   ]
 }

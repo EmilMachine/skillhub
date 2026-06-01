@@ -41,9 +41,8 @@ run_upgrade() {
     exit 0
   fi
 
-  local TMPFILE
   TMPFILE=$(mktemp /tmp/skillhub-upgrade-codex.XXXXXX)
-  trap 'rm -f "$TMPFILE"' EXIT
+  trap 'rm -f "${TMPFILE:-}"' EXIT
 
   # Diff using same logic as Claude adapter (state file schema is identical)
   : > "$TMPFILE"

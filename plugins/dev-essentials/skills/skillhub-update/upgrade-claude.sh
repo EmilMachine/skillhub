@@ -72,9 +72,10 @@ run_upgrade() {
     fi
   done
 
-  local TMPFILE
+  # Not declared local — trap fires after run_upgrade() returns, so TMPFILE
+  # must remain visible at shell scope for the EXIT trap to clean it up.
   TMPFILE=$(mktemp /tmp/skillhub-upgrade.XXXXXX)
-  trap 'rm -f "$TMPFILE"' EXIT
+  trap 'rm -f "${TMPFILE:-}"' EXIT
 
   # ── Step 1: Initial diff ─────────────────────────────────────────────────────
   _diff_plugins "$TMPFILE"

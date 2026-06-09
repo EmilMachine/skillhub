@@ -1,7 +1,7 @@
 ---
 name: mdupdate
-description: Refine plan by integrating user's inline answers
-argument-hint: path/to/2_plan.md
+description: Refine .md file by integrating user's inline answers
+argument-hint: path/to/<file_with_inline_answers>.md
 ---
 
 **TERSE MODE:** Minimal output. Bullet points. Technical language.

@@ -15,4 +15,4 @@ allowed-tools: Bash(bash *setup.sh*)
 
 1. Run `bash "<BASE_DIR>/setup.sh" $ARGUMENTS` via Bash tool (substitute the actual BASE_DIR path)
 2. Report each created item (skip silently if already existed)
-3. Remind user to fill in AGENTS.md and LOCAL_AGENTS.md placeholders
+3. Remind user to fill in AGENTS.md with references to files in AGENTS folder.

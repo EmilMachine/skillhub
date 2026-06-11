@@ -2,6 +2,37 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.3.6] - 2026-06-11
+
+**Added:**
+- dev-essentials v1.6.0: `/learn` skill — extract learnings from conversation history, a file, or freetext and save them to AGENTS.md / AGENTS/ files
+  - History mode (no arg): reviews conversation context, proposes agent-relevant learnings
+  - File mode: extracts learnings from a provided file path
+  - Freetext mode: short directives added as direct rules; longer phrases used as history filter
+  - Interactive confirm loop: Proceed / Modify / Stop before any writes
+  - Routes learnings to existing AGENTS/ topic files or creates new ones with AGENTS.md reference
+
+**Plugins:**
+- dev-essentials v1.6.0
+
+---
+
+## [1.3.5] - 2026-06-11
+
+**Changed:**
+- dev-essentials v1.5.0: `/setup` skill simplified
+  - Removed LOCAL_AGENTS.md and LOCAL_AGENTS.md.example scaffolding
+  - Removed .gitignore mutation (no longer appends LOCAL_AGENTS.md entry)
+  - CLAUDE.md now references only AGENTS.md (no LOCAL_AGENTS.md mention)
+  - opencode.json instructions now only `["AGENTS.md"]`
+  - All file creation fully idempotent (skip if exists, including CLAUDE.md)
+  - AGENTS/ folder created empty
+
+**Plugins:**
+- dev-essentials v1.5.0
+
+---
+
 ## [1.3.4] - 2026-05-30
 
 **Changed:**

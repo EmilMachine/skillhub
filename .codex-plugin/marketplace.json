@@ -26,7 +26,7 @@
       "name": "dev-essentials",
       "source": "./plugins/dev-essentials",
       "description": "Dev workflow essentials: project setup, code review, cleanup analysis, pro/con",
-      "version": "1.4.0"
+      "version": "1.6.0"
     }
   ]
 }

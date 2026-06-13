@@ -1,0 +1,46 @@
+{
+  "name": "claude-slim",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile_claude_slim"
+  },
+  "remoteUser": "devcontainer",
+  "updateRemoteUserUID": true,
+  "init": true,
+  "runArgs": [
+    "--cap-drop=ALL",
+    "--cap-add=CHOWN",
+    "--cap-add=SETUID",
+    "--cap-add=SETGID",
+    "--cap-add=DAC_OVERRIDE",
+    "--security-opt=no-new-privileges:true",
+    "--pids-limit=512",
+    "--tmpfs=/tmp:rw,exec,nosuid,nodev,mode=1777"
+  ],
+  "initializeCommand": "mkdir -p ~/.cache/uv ~/.claude && touch ~/.claude.json",
+  "mounts": [
+    "type=tmpfs,target=/home/devcontainer/.cache,tmpfs-mode=1777",
+    "type=bind,source=${localEnv:HOME}/.cache/uv,target=/home/devcontainer/.cache/uv",
+    "type=bind,source=${localEnv:HOME}/.claude.json,target=/home/devcontainer/.claude.json",
+    "type=bind,source=${localEnv:HOME}/.claude,target=/home/devcontainer/.claude",
+    "type=bind,source=${localEnv:HOME}/.claude.json,target=${localEnv:HOME}/.claude.json",
+    "type=bind,source=${localEnv:HOME}/.claude,target=${localEnv:HOME}/.claude"
+  ],
+  "containerEnv": {
+    "PIP_REQUIRE_VIRTUALENV": "true"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": ".venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.analysis.autoImportCompletions": false,
+        "extensions.autoCheckUpdates": false,
+        "extensions.autoUpdate": false,
+        "update.mode": "manual"
+      },
+      "extensions": []
+    }
+  },
+  "postCreateCommand": "[ -r ~/.claude.json ] || echo 'WARNING: ~/.claude.json not readable — Claude Code will require re-authentication'; [ -d ~/.claude ] || echo 'WARNING: ~/.claude not found — Claude Code will not have API credentials'"
+}

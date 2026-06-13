@@ -2,6 +2,19 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.3.7] - 2026-06-13
+
+**Added:**
+- dev-essentials v1.7.0: `/devcontainer` skill — stamps out a `.devcontainer` folder (claude-slim Docker + Claude Code setup) into the current directory or a given path
+  - Includes `devcontainer.json`, `Dockerfile_claude_slim`, and `devcontainer_README.md`
+  - `-f` flag to force-overwrite an existing `.devcontainer`
+  - Optional path argument; defaults to current working directory
+
+**Plugins:**
+- dev-essentials v1.7.0
+
+---
+
 ## [1.3.6] - 2026-06-11
 
 **Added:**

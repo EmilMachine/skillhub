@@ -2,6 +2,28 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.3.9] - 2026-06-16
+
+**Changed:**
+- dev-essentials v1.7.1: `/devcontainer` skill — added true color terminal setting to generated `devcontainer.json`
+
+**Plugins:**
+- dev-essentials v1.7.1
+
+---
+
+## [1.3.8] - 2026-06-16
+
+**Changed:**
+- md3step v1.2.0: minor polish to `mdplan` and `mdupdate`
+  - `mdplan`: clearer `# Open Questions` instructions — explicit checkbox format (`- [ ] <question> — needed for: <step>`), scope limited to blockers/ambiguities, refine step now says to remove resolved questions after folding into steps
+  - `mdupdate`: argument hint updated to reflect the skill works on research, plan, or any `.md` with inline `A:`/`Answer:` edits
+
+**Plugins:**
+- md3step v1.2.0
+
+---
+
 ## [1.3.7] - 2026-06-13
 
 **Added:**

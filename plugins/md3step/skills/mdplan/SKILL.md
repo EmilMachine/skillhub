@@ -15,8 +15,11 @@ argument-hint: path/to/1_research.md
    - Start with: `# Implementation Plan: [Topic]` with Overview
    - Numbered steps: each with Actions, Files, Verify
    - Success Criteria
-   - **After completing all plan sections**, add `# Open Questions` at the TOP of document (above title) - write this section LAST with full context
-   - **FINAL REFINE**, try to answer open questions by scanning sibling `*.md` files in same directory (exclude `2_plan.md`)
+   - **After completing all plan sections**, add `# Open Questions` at the TOP of the document (above title) — write this section LAST:
+     - Format each as: `- [ ] <specific question> — needed for: <which step>`
+     - Only include blockers or ambiguities that affect implementation choices
+     - If none: `- None.`
+   - **FINAL REFINE**: scan sibling `*.md` files in same dir (exclude `2_plan.md`) — if answers found, fold into relevant steps and remove resolved questions
 4. Output: "🛠️ Plan complete 🛠️. Created 2_plan.md"
 
 **All content terse.** Each step atomic. Clear verification criteria.

@@ -163,7 +163,36 @@ while IFS= read -r link; do
 done < <(find ".opencode/skills" -maxdepth 1 -type l 2>/dev/null)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Phase 5 — Report
+# Phase 5 — Auto-fix: .agents/plugins/marketplace.json  (generated from .claude-plugin)
+# ══════════════════════════════════════════════════════════════════════════════
+
+mkdir -p ".agents/plugins"
+AGENTS_MKT=".agents/plugins/marketplace.json"
+
+_agents_mkt_expected() {
+  local display_name
+  display_name=$(jq -r '.name' "$MARKETPLACE" | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
+  jq --arg dn "$display_name" '{
+    name: .name,
+    interface: { displayName: $dn },
+    plugins: [.plugins[] | {
+      name: .name,
+      source: { source: "local", path: .source },
+      policy: { installation: "AVAILABLE", authentication: "ON_INSTALL" },
+      category: "Productivity"
+    }]
+  }' "$MARKETPLACE"
+}
+
+_expected=$(_agents_mkt_expected)
+if [ ! -f "$AGENTS_MKT" ] || \
+   [ "$(jq -c . "$AGENTS_MKT" 2>/dev/null)" != "$(echo "$_expected" | jq -c .)" ]; then
+  echo "$_expected" > "$AGENTS_MKT"
+  fixed "generated $AGENTS_MKT from $MARKETPLACE"
+fi
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Phase 6 — Report
 # ══════════════════════════════════════════════════════════════════════════════
 
 if [ ${#ERRORS[@]} -gt 0 ]; then

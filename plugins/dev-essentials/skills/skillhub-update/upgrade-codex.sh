@@ -11,6 +11,10 @@
 # NOTE: There is no `codex plugin update` command.
 # Upgrade path = marketplace upgrade + remove + re-add.
 #
+# NOTE: Codex runs bash subprocesses inside a network-disabled seatbelt sandbox
+# (CODEX_SANDBOX_NETWORK_DISABLED=1). Plugin installs require network, so upgrades
+# must be run from the terminal, not from inside Codex.
+#
 # Installed plugin layout (source of truth):
 #   ~/.codex/plugins/cache/<marketplace>/<plugin>/<version>/
 
@@ -54,6 +58,21 @@ run_upgrade() {
   done < "$TMPFILE"
   echo ""
 
+  # ── Network check — sandbox blocks outbound connections ──────────────────────
+  if [ "${CODEX_SANDBOX_NETWORK_DISABLED:-}" = "1" ]; then
+    echo "⚠️  Network is disabled in this Codex sandbox — cannot pull updates from GitHub."
+    echo "    Run the following from your terminal to upgrade:"
+    echo ""
+    while IFS=' ' read -r plugin_key _; do
+      local _plugin _mkt
+      _plugin="${plugin_key%@*}"
+      _mkt="${plugin_key#*@}"
+      echo "    codex plugin remove ${plugin_key} && codex plugin add ${_plugin} --marketplace ${_mkt}"
+    done < "$TMPFILE"
+    echo ""
+    exit 0
+  fi
+
   # ── Step 2: Refresh marketplace metadata ─────────────────────────────────────
   echo "🔄 Refreshing marketplaces..."
   codex plugin marketplace upgrade 2>&1 || \
@@ -71,7 +90,6 @@ run_upgrade() {
 
     if codex plugin remove "$plugin_key" >/dev/null 2>&1 && \
        codex plugin add "$_plugin" --marketplace "$_mkt" >/dev/null 2>&1; then
-      # New version is the directory name in cache after reinstall
       local new_ver_dir new_ver
       new_ver_dir=$(find "$CACHE_DIR/$_mkt/$_plugin" -mindepth 1 -maxdepth 1 \
         -type d 2>/dev/null | sort -V | tail -1)

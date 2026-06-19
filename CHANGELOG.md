@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.4.2] - 2026-06-19
+
+**Fixed:**
+- dev-essentials v1.7.4: `upgrade-codex.sh` detects `CODEX_SANDBOX_NETWORK_DISABLED=1` before attempting marketplace refresh or remove/re-add; prints exact terminal commands to run instead of failing with a git network error
+
+**Plugins:**
+- dev-essentials v1.7.4
+
+---
+
 ## [1.4.1] - 2026-06-19
 
 **Fixed:**

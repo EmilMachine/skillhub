@@ -5,10 +5,10 @@
   },
   "plugins": [
     {
-      "name": "dev-essentials",
+      "name": "md3step",
       "source": {
         "source": "local",
-        "path": "./plugins/dev-essentials"
+        "path": "./plugins/md3step"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -17,10 +17,10 @@
       "category": "Productivity"
     },
     {
-      "name": "md3step",
+      "name": "dev-essentials",
       "source": {
         "source": "local",
-        "path": "./plugins/md3step"
+        "path": "./plugins/dev-essentials"
       },
       "policy": {
         "installation": "AVAILABLE",

@@ -7,8 +7,10 @@
     {
       "name": "md3step",
       "source": {
-        "source": "local",
-        "path": "./plugins/md3step"
+        "source": "git-subdir",
+        "url": "https://github.com/EmilMachine/skillhub.git",
+        "path": "./plugins/md3step",
+        "ref": "main"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -19,8 +21,10 @@
     {
       "name": "dev-essentials",
       "source": {
-        "source": "local",
-        "path": "./plugins/dev-essentials"
+        "source": "git-subdir",
+        "url": "https://github.com/EmilMachine/skillhub.git",
+        "path": "./plugins/dev-essentials",
+        "ref": "main"
       },
       "policy": {
         "installation": "AVAILABLE",

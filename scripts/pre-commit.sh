@@ -170,18 +170,36 @@ mkdir -p ".agents/plugins"
 AGENTS_MKT=".agents/plugins/marketplace.json"
 
 _agents_mkt_expected() {
-  local display_name
+  local display_name repo_url
   display_name=$(jq -r '.name' "$MARKETPLACE" | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
-  jq --arg dn "$display_name" '{
-    name: .name,
-    interface: { displayName: $dn },
-    plugins: [.plugins[] | {
+  # Normalise SSH remote to HTTPS clone URL
+  repo_url=$(git remote get-url origin 2>/dev/null \
+    | sed 's|git@github\.com:|https://github.com/|' \
+    | sed 's|\.git$||')
+  if [ -z "$repo_url" ]; then
+    # No remote configured — fall back to local source paths
+    jq --arg dn "$display_name" '{
       name: .name,
-      source: { source: "local", path: .source },
-      policy: { installation: "AVAILABLE", authentication: "ON_INSTALL" },
-      category: "Productivity"
-    }]
-  }' "$MARKETPLACE"
+      interface: { displayName: $dn },
+      plugins: [.plugins[] | {
+        name: .name,
+        source: { source: "local", path: .source },
+        policy: { installation: "AVAILABLE", authentication: "ON_INSTALL" },
+        category: "Productivity"
+      }]
+    }' "$MARKETPLACE"
+  else
+    jq --arg dn "$display_name" --arg url "${repo_url}.git" '{
+      name: .name,
+      interface: { displayName: $dn },
+      plugins: [.plugins[] | {
+        name: .name,
+        source: { source: "git-subdir", url: $url, path: .source, ref: "main" },
+        policy: { installation: "AVAILABLE", authentication: "ON_INSTALL" },
+        category: "Productivity"
+      }]
+    }' "$MARKETPLACE"
+  fi
 }
 
 _expected=$(_agents_mkt_expected)

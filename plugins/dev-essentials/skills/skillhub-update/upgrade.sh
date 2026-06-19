@@ -23,8 +23,8 @@ if [ "${CLAUDECODE:-}" = "1" ] || [ -n "${CLAUDE_CODE_SESSION_ID:-}" ]; then
   TOOL="claude"
 elif [ -n "${OPENCODE:-}" ] || [ -n "${OPENCODE_DATA_HOME:-}" ] || [ -n "${OPENCODE_SESSION:-}" ]; then
   TOOL="opencode"
-elif [ -n "${CODEX_HOME:-}" ] || [ -n "${CODEX:-}" ] || \
-     [ -n "${CODEX_SESSION_ID:-}" ] || [ -n "${OPENAI_CODEX_SESSION:-}" ]; then
+elif [ -n "${CODEX_THREAD_ID:-}" ] || [ -n "${CODEX_SANDBOX:-}" ] || \
+     [ -n "${CODEX_CI:-}" ] || [ -n "${CODEX_MANAGED_BY_NPM:-}" ]; then
   TOOL="codex"
 fi
 

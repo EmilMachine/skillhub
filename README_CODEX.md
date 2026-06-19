@@ -4,23 +4,40 @@ Codex uses the same `skills/<name>/SKILL.md` convention as Claude Code. Each plu
 
 ## Install via Marketplace
 
-```sh
-# In Codex CLI
-$plugin-marketplace add https://github.com/EmilMachine/skillhub
-$plugin install md3step
+Run from your terminal (not inside the Codex chat):
+
+```bash
+# 1. Register the skillhub marketplace (once)
+codex plugin marketplace add EmilMachine/skillhub --ref main --sparse .agents/plugins
+
+# 2. Install plugins
+codex plugin add md3step --marketplace skillhub
+codex plugin add dev-essentials --marketplace skillhub
 ```
 
 Or in the Codex app: **Plugins → Marketplace → Add Source → GitHub: `EmilMachine/skillhub`**
 
 ## Invoke Skills
 
-```sh
-# Explicit invocation
-$mdresearch
-$mdplan
+Skills are invoked inside the Codex chat using `@skill-name`:
 
-# Or let Codex select based on your prompt
 ```
+@mdresearch
+@mdplan
+```
+
+Or just describe what you want — Codex selects the matching skill automatically.
+
+## Update Installed Plugins
+
+```bash
+# Refresh marketplace metadata and reinstall all plugins to latest
+codex plugin marketplace upgrade skillhub
+codex plugin remove dev-essentials@skillhub && codex plugin add dev-essentials --marketplace skillhub
+codex plugin remove md3step@skillhub        && codex plugin add md3step --marketplace skillhub
+```
+
+Or use the `@skillhub-update` skill inside Codex to do this automatically.
 
 ## Manual Skill Copy (no marketplace)
 
@@ -47,7 +64,7 @@ Codex reads `AGENTS.md` before starting work, layering global → project-local.
 
 ## Resources
 
-- [Codex Skills docs](https://developers.openai.com/codex/skills)
 - [Codex Plugins docs](https://developers.openai.com/codex/plugins)
+- [Codex Build Plugins docs](https://developers.openai.com/codex/build-plugins)
 - [openai/skills catalog](https://github.com/openai/skills)
 - [AGENTS.md guide](https://developers.openai.com/codex/guides/agents-md)

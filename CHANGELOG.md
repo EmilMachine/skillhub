@@ -2,6 +2,23 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.4.0] - 2026-06-19
+
+**Added:**
+- Codex marketplace now uses `git-subdir` sources in `.agents/plugins/marketplace.json` so `codex plugin marketplace add EmilMachine/skillhub --ref main --sparse .agents/plugins` works correctly — sparse checkout only needs `.agents/plugins/`, each plugin is fetched from GitHub on install
+- `scripts/pre-commit.sh`: Phase 5 now generates `git-subdir` entries (deriving HTTPS URL from `git remote get-url origin`); falls back to `local` if no remote is configured
+- `README_CODEX.md`: corrected all commands — removed hallucinated `$plugin-marketplace` syntax, replaced with actual `codex plugin marketplace add` / `codex plugin add --marketplace` CLI commands
+
+**Fixed:**
+- dev-essentials v1.7.2: `skillhub-update` Codex adapter
+  - `upgrade.sh`: Codex detection now uses env vars actually injected by Codex (`CODEX_THREAD_ID`, `CODEX_SANDBOX`, `CODEX_CI`, `CODEX_MANAGED_BY_NPM`); old wrong vars removed
+  - `upgrade-codex.sh`: rewrote upgrade logic to read installed plugins from `~/.codex/plugins/cache/<marketplace>/<plugin>/<version>/` instead of the marketplace sparse clone (which only contains `.agents/plugins/` and lacks plugin subdirs with git-subdir sources)
+
+**Plugins:**
+- dev-essentials v1.7.2
+
+---
+
 ## [1.3.9] - 2026-06-16
 
 **Changed:**

@@ -2,6 +2,18 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.4.1] - 2026-06-19
+
+**Fixed:**
+- dev-essentials v1.7.3: `skillhub-update` SKILL.md now works in both Claude Code and Codex
+  - Claude Code: continues using harness-injected `Base directory for this skill: <path>` as `BASE_DIR`
+  - Codex: explicit `find` command against `~/.codex/plugins/cache/` to locate the latest installed `upgrade.sh`, avoiding stale symlinks under `~/.codex/skills/`
+
+**Plugins:**
+- dev-essentials v1.7.3
+
+---
+
 ## [1.4.0] - 2026-06-19
 
 **Added:**

@@ -4,8 +4,16 @@ description: Update all installed plugins to latest — detects tool, diffs vers
 allowed-tools: Bash(bash *upgrade.sh*)
 ---
 
-**Script path:** The harness injects `Base directory for this skill: <path>` — use that path as `BASE_DIR`.
-
 **Permission note:** To skip future prompts, add `"Bash(bash *upgrade.sh*)"` to `.claude/settings.json`.
 
-Run `bash "<BASE_DIR>/upgrade.sh"` (substitute actual BASE_DIR) and stream the output directly to the user.
+**Claude Code:** The harness injects `Base directory for this skill: <path>` — use that as `BASE_DIR` and run:
+```
+bash "<BASE_DIR>/upgrade.sh"
+```
+
+**Codex:** The plugin is installed under `~/.codex/plugins/cache/`. Find and run the latest copy:
+```
+bash "$(find "$HOME/.codex/plugins/cache" -name upgrade.sh -path "*/skillhub-update/*" 2>/dev/null | sort -V | tail -1)"
+```
+
+Stream all output directly to the user.

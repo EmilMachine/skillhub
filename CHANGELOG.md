@@ -2,6 +2,21 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.4.4] - 2026-06-22
+
+**Changed:**
+- dev-essentials v1.7.5:
+  - `issue` skill: URL fallback now auto-opens browser via `open`/`xdg-open`; SKILL.md instructs Claude to repeat the URL as visible text if browser open fails
+  - `issue` skill: added terse redaction audit step between field construction and script call
+  - `issue/create_issue.sh`: `scrub()` now strips relative path segments (e.g. `org/repo`, `folder/subdir`) that aren't part of a URL, replacing with `basepath/subpath`
+  - `learn` skill: always writes `AGENTS.md` and `AGENTS/` at git root; computes `SUBPATH` offset so reference links resolve correctly from monorepo root
+  - `gitstats` skill: pre-flight `test -f` check on script path; exits with actionable error suggesting `/skillhub-update` if missing
+
+**Plugins:**
+- dev-essentials v1.7.5
+
+---
+
 ## [1.4.3] - 2026-06-19
 
 **Removed:**

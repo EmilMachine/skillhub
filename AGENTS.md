@@ -8,6 +8,10 @@
 - Lint: `<lint command>`
 - Build: `<build command>`
 
+## Agent References
+
+- codex: [AGENTS/codex.md](AGENTS/codex.md)
+
 ## Conventions
 <coding conventions>
 

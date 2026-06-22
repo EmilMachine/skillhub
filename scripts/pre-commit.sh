@@ -84,19 +84,7 @@ if [ ${#ERRORS[@]} -gt 0 ]; then
 fi
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Phase 2 — Auto-fix: .codex-plugin/marketplace.json  (exact copy of .claude-plugin)
-# ══════════════════════════════════════════════════════════════════════════════
-
-mkdir -p ".codex-plugin"
-CODEX_MKT=".codex-plugin/marketplace.json"
-
-if [ ! -f "$CODEX_MKT" ] || ! diff -q "$MARKETPLACE" "$CODEX_MKT" >/dev/null 2>&1; then
-  cp "$MARKETPLACE" "$CODEX_MKT"
-  fixed "synced $CODEX_MKT ← $MARKETPLACE"
-fi
-
-# ══════════════════════════════════════════════════════════════════════════════
-# Phase 3 — Auto-fix: .codex-plugin/plugin.json per plugin  (exact copy)
+# Phase 2 — Auto-fix: .codex-plugin/plugin.json per plugin  (exact copy)
 # ══════════════════════════════════════════════════════════════════════════════
 
 while IFS= read -r name; do
@@ -111,7 +99,7 @@ while IFS= read -r name; do
 done < <(jq -r '.plugins[].name' "$MARKETPLACE")
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Phase 4 — Auto-fix: .opencode/skills/ symlinks
+# Phase 3 — Auto-fix: .opencode/skills/ symlinks
 # ══════════════════════════════════════════════════════════════════════════════
 
 mkdir -p ".opencode/skills"
@@ -163,7 +151,7 @@ while IFS= read -r link; do
 done < <(find ".opencode/skills" -maxdepth 1 -type l 2>/dev/null)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Phase 5 — Auto-fix: .agents/plugins/marketplace.json  (generated from .claude-plugin)
+# Phase 4 — Auto-fix: .agents/plugins/marketplace.json  (generated from .claude-plugin)
 # ══════════════════════════════════════════════════════════════════════════════
 
 mkdir -p ".agents/plugins"
@@ -210,7 +198,7 @@ if [ ! -f "$AGENTS_MKT" ] || \
 fi
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Phase 6 — Report
+# Phase 5 — Report
 # ══════════════════════════════════════════════════════════════════════════════
 
 if [ ${#ERRORS[@]} -gt 0 ]; then

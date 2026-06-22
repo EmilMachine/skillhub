@@ -51,6 +51,8 @@ scrub() {
   s=$(echo "$s" | sed -E 's|/root/[^[:space:]",]+|[PATH]|g')
   # UUIDs
   s=$(echo "$s" | sed -E 's/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/[UUID]/gi')
+  # Relative path segments not inside URLs (e.g. org/repo, folder/subdir/file)
+  s=$(printf '%s' "$s" | perl -pe 's|(?<![:/\w])([a-zA-Z0-9_-]{2,}/[a-zA-Z0-9_-]{2,}(?:/[a-zA-Z0-9_-]{2,})*)|basepath/subpath|g')
   echo "$s"
 }
 BODY=$(scrub "$BODY")
@@ -98,3 +100,8 @@ URL="https://github.com/EmilMachine/skillhub/issues/new?$(
 )"
 echo "⚠️ Could not create issue automatically. Open manually:"
 echo "$URL"
+if open "$URL" 2>/dev/null || xdg-open "$URL" 2>/dev/null; then
+  echo "✓ Opened in browser"
+else
+  echo "⚠️ Could not open browser automatically"
+fi

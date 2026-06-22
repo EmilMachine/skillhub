@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A curated Claude Code skill marketplace for personal development workflows",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "pluginRoot": "./plugins"
   },
   "plugins": [

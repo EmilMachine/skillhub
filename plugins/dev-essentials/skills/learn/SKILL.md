@@ -48,19 +48,27 @@ Proposed learnings:
 
 **Write learnings to AGENTS files:**
 
-1. Ensure `AGENTS/` directory exists (create if missing via Bash `mkdir -p AGENTS`)
-2. Read `AGENTS.md` if it exists; create it if missing:
+0. **Locate git root (run first):**
+   ```bash
+   git rev-parse --show-toplevel && pwd
+   ```
+   - `GIT_ROOT` = output of `--show-toplevel` (fallback to `pwd` if not a git repo)
+   - `SUBPATH` = relative path from GIT_ROOT to cwd (empty if already at root)
+   - All file operations below use `GIT_ROOT` as the base — never cwd.
+
+1. Ensure `GIT_ROOT/AGENTS/` exists (`mkdir -p "$GIT_ROOT/AGENTS"`)
+2. Read `GIT_ROOT/AGENTS.md` if it exists; create if missing:
    ```markdown
    # Agent Instructions
 
    ## Conventions
    ```
 3. For each learning bullet:
-   - Scan AGENTS.md for references to existing `AGENTS/*.md` files
+   - Scan `GIT_ROOT/AGENTS.md` for references to existing `AGENTS/*.md` files
    - Read referenced files to find the most relevant topic match
    - If a relevant file found: append bullet to that file under the appropriate section
-   - If no relevant file found: derive a short `<topic>` slug, create `AGENTS/<topic>.md` with `# <Topic>` header and the bullet, then add a terse reference line to AGENTS.md at the appropriate section: `- <topic>: AGENTS/<topic>.md`
-4. If AGENTS.md itself is the best home (e.g. a one-line rule with no existing topic file): append bullet directly to AGENTS.md under the relevant section.
+   - If no relevant file found: derive a short `<topic>` slug, create `GIT_ROOT/AGENTS/<topic>.md` with `# <Topic>` header and the bullet, then add a reference line to `GIT_ROOT/AGENTS.md`: `- <topic>: SUBPATH/AGENTS/<topic>.md` (omit `SUBPATH/` prefix if SUBPATH is empty)
+4. If AGENTS.md itself is the best home: append bullet directly to `GIT_ROOT/AGENTS.md`.
 
 ---
 

@@ -2,7 +2,7 @@
 name: issue
 description: Create a GitHub issue from conversation context; auto-labels bug-agentmade
 argument-hint: "[optional user summary]"
-allowed-tools: Bash(bash *create_issue.sh*)
+allowed-tools: Bash(bash *create_issue.sh*), Bash(open *), Bash(xdg-open *)
 ---
 
 **Permission note:** This skill runs Bash to create issues. You may be prompted to allow Bash execution. To skip future prompts, add to `.claude/settings.json`: `"Bash(bash *create_issue.sh*)"`
@@ -26,6 +26,8 @@ allowed-tools: Bash(bash *create_issue.sh*)
      steps_to_reproduce: <concise numbered steps, generic — no internal specifics>
      ```
 
+**Redaction audit (do this before Phase 2):** Re-read every field. Replace any specific project, folder, repo, or org name with `[PROJECT]`, path segments with `basepath/subpath`, org names with `[ORG]`. When in doubt, redact it.
+
 **Script path:** The harness injects `Base directory for this skill: <path>` at the top of these instructions — use that path as `BASE_DIR` for all script references below.
 
 **Phase 2 — Create issue (Bash):**
@@ -44,3 +46,8 @@ ISSUE_TITLE="<TITLE>" ISSUE_TEXT="<BODY content>" bash "<BASE_DIR>/create_issue.
 
 **If exit code is 0:** output `Issue: <url>` and STOP.
 **If exit code is 1:** output the error and STOP.
+
+**If the script output contains "Could not create issue automatically":**
+- Extract the URL from the output
+- If the script did not report "✓ Opened in browser", run: `open "<URL>" 2>/dev/null || xdg-open "<URL>" 2>/dev/null` via Bash
+- Always repeat the URL as plain assistant text (not inside a tool block) so the user can see and copy it

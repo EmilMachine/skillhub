@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.4.3] - 2026-06-19
+
+**Removed:**
+- `.codex-plugin/marketplace.json` — Codex does not read this path; `.agents/plugins/marketplace.json` is the correct Codex marketplace location
+- `scripts/pre-commit.sh`: removed Phase 2 that synced the now-deleted file; renumbered remaining phases
+
+**Docs:**
+- `AGENTS/plugin-verification.md`: replaced `.codex-plugin/marketplace.json` references with `.agents/plugins/marketplace.json`
+
+---
+
 ## [1.4.2] - 2026-06-19
 
 **Fixed:**

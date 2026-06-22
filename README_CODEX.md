@@ -19,11 +19,13 @@ Or in the Codex app: **Plugins → Marketplace → Add Source → GitHub: `EmilM
 
 ## Invoke Skills
 
-Skills are invoked inside the Codex chat using `@skill-name`:
+Installed plugin skills use `$plugin-name:skill-name` inside the Codex chat:
 
 ```
-@mdresearch
-@mdplan
+$md3step:mdresearch
+$md3step:mdplan
+$md3step:mdimplement
+$dev-essentials:skillhub-update
 ```
 
 Or just describe what you want — Codex selects the matching skill automatically.
@@ -37,7 +39,7 @@ codex plugin remove dev-essentials@skillhub && codex plugin add dev-essentials -
 codex plugin remove md3step@skillhub        && codex plugin add md3step --marketplace skillhub
 ```
 
-Or use the `@skillhub-update` skill inside Codex to do this automatically.
+Or run `$dev-essentials:skillhub-update` inside Codex — it will detect the network sandbox and print the exact terminal commands to run.
 
 ## Manual Skill Copy (no marketplace)
 

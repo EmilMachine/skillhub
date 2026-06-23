@@ -53,6 +53,14 @@ instructions — use that path as `BASE_DIR` for all script references below.
 
 Then reference scripts as `"<BASE_DIR>/script.sh"` (Claude substitutes the actual path at runtime).
 
+**Preventing path truncation:** Claude sometimes drops the last segment of BASE_DIR (e.g. resolves `.../skills/gitstats/script.sh` as `.../skills/script.sh`). Add an explicit note in SKILL.md:
+```markdown
+BASE_DIR already ends in `.../skills/<skillname>` — do not trim or modify it.
+```
+When the path is wrong, Claude falls back to `ls` exploration; each `ls` is not auto-approved and generates a prompt.
+
+**Run scripts directly — no existence guard:** Prefer `bash "<BASE_DIR>/script.sh" $ARGUMENTS` over a two-step verify-then-run pattern. Fewer Bash calls = fewer prompts. Pair with `allowed-tools: Bash(bash *script.sh*)` so the direct invocation auto-approves. Keep the glob in sync with the command form — `Bash(bash *script.sh*)` only matches commands that start with `bash`.
+
 ## Passing LLM-generated content to scripts
 
 **Multi-line body → stdin via quoted heredoc** (prevents variable expansion):

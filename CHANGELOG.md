@@ -2,6 +2,40 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.4.9] - 2026-06-23
+
+**Changed:**
+- dev-essentials v1.8.0:
+  - `gitstats` skill: replaced O(2N) per-author git calls in LINES/FILES/LAST mode with a single `git log --numstat` pass aggregated by awk — eliminates ~1900 sequential git invocations on large repos; runtime drops from minutes to seconds
+
+**Plugins:**
+- dev-essentials v1.8.0
+
+---
+
+## [1.4.8] - 2026-06-23
+
+**Changed:**
+- dev-essentials v1.7.9:
+  - `gitstats` skill: removed bash 4+ dependencies from `gitstats_all.sh` — replaced `${arg^^}`/`${m,,}` with `tr` and `mapfile` with a `while read` loop; now compatible with macOS system bash (3.2)
+
+**Plugins:**
+- dev-essentials v1.7.9
+
+---
+
+## [1.4.7] - 2026-06-23
+
+**Changed:**
+- dev-essentials v1.7.8:
+  - `gitstats` skill: collapsed two-step verify+run into a single Bash call (if/then/else inline), eliminating one permission prompt per invocation
+  - `gitstats` skill: `allowed-tools` pattern tightened to `if [ -f "*gitstats_all.sh" ]; then bash "*gitstats_all.sh"*` — matches only the exact if/then structure the skill emits, not arbitrary commands referencing the filename
+
+**Plugins:**
+- dev-essentials v1.7.8
+
+---
+
 ## [1.4.4] - 2026-06-22
 
 **Changed:**

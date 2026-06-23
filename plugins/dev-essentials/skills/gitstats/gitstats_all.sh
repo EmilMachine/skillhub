@@ -11,7 +11,7 @@ cd "$(git rev-parse --show-toplevel)" || exit 1
 
 tab=$'\t'
 arg="${1:-LINES}"
-upper="${arg^^}"
+upper=$(printf '%s' "$arg" | tr '[:lower:]' '[:upper:]')
 
 # ── 1. Sort flag ──────────────────────────────────────────────────────────────
 if [[ "$upper" == "LINES" || "$upper" == "FILES" || "$upper" == "LAST" ]]; then
@@ -24,14 +24,22 @@ if [[ "$upper" == "LINES" || "$upper" == "FILES" || "$upper" == "LAST" ]]; then
   {
     printf "AUTHOR\tLINES\tFILES\tLAST\n"
 
-    git log --format='%aN' | sort -u | while IFS= read -r author; do
-      last=$(git log --author="$author" --format="%ad" --date=short -1)
-      git log --author="$author" --pretty=tformat: --numstat | awk \
-        -v author="$author" -v last="$last" '
-        NF==3 { added+=$1; removed+=$2; files++ }
-        END { print (added+removed) "\t" files "\t" last "\t" author }
-      '
-    done | sort -t"$tab" $sort_key | awk -F'\t' '{ print $4 "\t" $1 "\t" $2 "\t" $3 }'
+    git log --format='%aN%x09%ad' --date=short --numstat | awk '
+      BEGIN { FS = "\t" }
+      NF == 2 && $2 ~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/ {
+        cur = $1
+        if (!(cur in last)) last[cur] = $2
+        next
+      }
+      NF == 3 && $1 ~ /^[0-9-]+$/ && $2 ~ /^[0-9-]+$/ {
+        if ($1 != "-") lines[cur] += $1
+        if ($2 != "-") lines[cur] += $2
+        files[cur]++
+      }
+      END {
+        for (a in files) print (lines[a]+0) "\t" files[a] "\t" last[a] "\t" a
+      }
+    ' | sort -t"$tab" $sort_key | awk -F'\t' '{ print $4 "\t" $1 "\t" $2 "\t" $3 }'
 
   } | column -t -s$'\t' | awk '
     NR == 1 { print; sep = $0; gsub(/[^ ]/, "-", sep); print sep; next }
@@ -41,7 +49,10 @@ if [[ "$upper" == "LINES" || "$upper" == "FILES" || "$upper" == "LAST" ]]; then
 fi
 
 # ── 2. Author prefix match ────────────────────────────────────────────────────
-mapfile -t matches < <(git log --format='%aN' | sort -u | grep -i "^$arg")
+matches=()
+while IFS= read -r line; do
+  matches=("${matches[@]}" "$line")
+done < <(git log --format='%aN' | sort -u | grep -i "^$arg")
 
 author=""
 if [ ${#matches[@]} -eq 1 ]; then
@@ -49,7 +60,7 @@ if [ ${#matches[@]} -eq 1 ]; then
 elif [ ${#matches[@]} -gt 1 ]; then
   # Prefer exact match (case-insensitive) over ambiguous prefix
   for m in "${matches[@]}"; do
-    [[ "${m,,}" == "${arg,,}" ]] && author="$m" && break
+    [[ "$(printf '%s' "$m" | tr '[:upper:]' '[:lower:]')" == "$(printf '%s' "$arg" | tr '[:upper:]' '[:lower:]')" ]] && author="$m" && break
   done
   if [ -z "$author" ]; then
     echo "Multiple contributors match '$arg' (prefix), please be more specific:" >&2

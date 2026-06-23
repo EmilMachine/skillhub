@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.5.2] - 2026-06-24
+
+**Changed:**
+- dev-essentials v1.8.3:
+  - `codereview`, `setup`, `skillhub-update`, `issue`, `devcontainer` skills: updated BASE_DIR note to explicitly state the injected path already ends in `.../skills/<skillname>` — prevents Claude from dropping the subdirectory and falling back to `ls` exploration
+
+**Plugins:**
+- dev-essentials v1.8.3
+
+---
+
 ## [1.5.1] - 2026-06-23
 
 **Changed:**

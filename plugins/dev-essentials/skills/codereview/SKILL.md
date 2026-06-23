@@ -5,7 +5,7 @@ argument-hint: <branch>
 allowed-tools: Bash(bash *codereview.sh*)
 ---
 
-**Script path:** The harness injects `Base directory for this skill: <path>` at the top of these instructions — use that path as `BASE_DIR` for all script references below.
+**Script path:** The harness injects `Base directory for this skill: <path>` at the very top of these instructions. That full path is `BASE_DIR` — it already ends in `.../skills/codereview`. Do not trim or modify it.
 
 **IMMEDIATE EXIT if no argument:**
 - If `$ARGUMENTS` is empty: output "❌ Error: Branch name required. Usage: /codereview <branch>" and STOP.

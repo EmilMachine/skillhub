@@ -28,7 +28,7 @@ allowed-tools: Bash(bash *create_issue.sh*), Bash(open *), Bash(xdg-open *)
 
 **Redaction audit (do this before Phase 2):** Re-read every field. Replace any specific project, folder, repo, or org name with `[PROJECT]`, path segments with `basepath/subpath`, org names with `[ORG]`. When in doubt, redact it.
 
-**Script path:** The harness injects `Base directory for this skill: <path>` at the top of these instructions — use that path as `BASE_DIR` for all script references below.
+**Script path:** The harness injects `Base directory for this skill: <path>` at the very top of these instructions. That full path is `BASE_DIR` — it already ends in `.../skills/issue`. Do not trim or modify it.
 
 **Phase 2 — Create issue (Bash):**
 

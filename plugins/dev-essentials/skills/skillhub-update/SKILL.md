@@ -6,7 +6,7 @@ allowed-tools: Bash(bash *upgrade.sh*)
 
 **Permission note:** To skip future prompts, add `"Bash(bash *upgrade.sh*)"` to `.claude/settings.json`.
 
-**Claude Code:** The harness injects `Base directory for this skill: <path>` — use that as `BASE_DIR` and run:
+**Claude Code:** The harness injects `Base directory for this skill: <path>` at the very top. That full path is `BASE_DIR` — it already ends in `.../skills/skillhub-update`. Do not trim or modify it. Run:
 ```
 bash "<BASE_DIR>/upgrade.sh"
 ```

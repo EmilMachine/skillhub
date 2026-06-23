@@ -5,7 +5,7 @@ argument-hint: [-f] [path]
 allowed-tools: Bash(bash *devcontainer.sh*)
 ---
 
-**Script path:** The harness injects `Base directory for this skill: <path>` at the top — use that as `BASE_DIR`.
+**Script path:** The harness injects `Base directory for this skill: <path>` at the very top of these instructions. That full path is `BASE_DIR` — it already ends in `.../skills/devcontainer`. Do not trim or modify it.
 
 - Run `bash "<BASE_DIR>/devcontainer.sh" $ARGUMENTS`
 - `-f` flag overwrites an existing `.devcontainer`; without it, exits if one already exists

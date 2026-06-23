@@ -7,7 +7,7 @@ allowed-tools: Bash(bash *setup.sh*)
 
 **Permission note:** This skill runs Bash to bootstrap project files. You may be prompted to allow Bash execution. To skip future prompts, add to `.claude/settings.json`: `"Bash(bash *setup.sh*)"`
 
-**Script path:** The harness injects `Base directory for this skill: <path>` at the top of these instructions — use that path as `BASE_DIR` for all script references below.
+**Script path:** The harness injects `Base directory for this skill: <path>` at the very top of these instructions. That full path is `BASE_DIR` — it already ends in `.../skills/setup`. Do not trim or modify it.
 
 **IMMEDIATE EXIT if confirmation needed:**
 - Runs setup.sh with optional `$ARGUMENTS` as root path

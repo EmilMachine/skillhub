@@ -2,6 +2,18 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.5.0] - 2026-06-23
+
+**Changed:**
+- dev-essentials v1.8.1:
+  - `gitstats` skill: removed script-existence guard and error message from SKILL.md; now runs `bash "<BASE_DIR>/gitstats_all.sh"` directly
+  - `gitstats` skill: simplified `allowed-tools` back to `Bash(bash *gitstats_all.sh*)` to match the direct invocation
+
+**Plugins:**
+- dev-essentials v1.8.1
+
+---
+
 ## [1.4.9] - 2026-06-23
 
 **Changed:**

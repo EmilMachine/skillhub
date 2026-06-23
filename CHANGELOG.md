@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.5.1] - 2026-06-23
+
+**Changed:**
+- dev-essentials v1.8.2:
+  - `gitstats` skill: clarified BASE_DIR instruction — explicitly states the injected path already ends in `.../skills/gitstats` and must not be trimmed, preventing Claude from dropping the subdirectory and falling back to `ls` exploration
+
+**Plugins:**
+- dev-essentials v1.8.2
+
+---
+
 ## [1.5.0] - 2026-06-23
 
 **Changed:**

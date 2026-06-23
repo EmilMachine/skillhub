@@ -5,9 +5,9 @@ argument-hint: "[filename | contributor | LINES|FILES|LAST]"
 allowed-tools: Bash(bash *gitstats_all.sh*)
 ---
 
-**Script path:** The harness injects `Base directory for this skill: <path>` at the top of these instructions — use that path as `BASE_DIR` for all script references below.
+**Script path:** The harness injects `Base directory for this skill: <path>` at the very top of these instructions. That full path is `BASE_DIR` — it already ends in `.../skills/gitstats`. Do not trim or modify it.
 
-Run `bash "<BASE_DIR>/gitstats_all.sh" $ARGUMENTS` and print the output.
+Run `bash "<BASE_DIR>/gitstats_all.sh" $ARGUMENTS` (substitute the actual injected path) and print the output.
 
 Modes (handled entirely by script — no parsing needed here):
 - No arg / `LINES` / `FILES` / `LAST` → all contributors ranked by chosen column

@@ -14,10 +14,12 @@ This repo ships `.opencode/skills/` with all skills pre-wired — clone once, th
 ```bash
 git clone https://github.com/EmilMachine/skillhub ~/.local/share/skillhub
 
-# Symlink the whole skills bundle into your global opencode config
-mkdir -p ~/.config/opencode/skills
-for skill in ~/.local/share/skillhub/.opencode/skills/*; do
-  ln -s "$skill" ~/.config/opencode/skills/
+# Symlink all skills from all plugins into your global opencode config
+mkdir -p ~/.opencode/skills
+for plugin in ~/.local/share/skillhub/plugins/*/; do
+  for skill in "$plugin"skills/*/; do
+    ln -s "$skill" ~/.opencode/skills/
+  done
 done
 ```
 
@@ -28,41 +30,41 @@ Skills are discovered on-demand — OpenCode sees available names and loads cont
 ```bash
 # Run from your project root (repo must already be cloned as above)
 mkdir -p .opencode/skills
-for skill in ~/.local/share/skillhub/.opencode/skills/*; do
-  ln -s "$skill" .opencode/skills/
+for plugin in ~/.local/share/skillhub/plugins/*/; do
+  for skill in "$plugin"skills/*/; do
+    ln -s "$skill" .opencode/skills/
+  done
 done
 ```
 
 Or selectively:
 
 ```bash
-ln -s ~/.local/share/skillhub/.opencode/skills/mdresearch .opencode/skills/mdresearch
-ln -s ~/.local/share/skillhub/.opencode/skills/mdplan     .opencode/skills/mdplan
+ln -s ~/.local/share/skillhub/plugins/md3step/skills/mdresearch .opencode/skills/mdresearch
+ln -s ~/.local/share/skillhub/plugins/md3step/skills/mdplan     .opencode/skills/mdplan
 ```
 
 
 ## Update
 
-```bash
-cd ~/.local/share/skillhub && git pull
+Run the built-in skill (handles pull + new symlinks automatically):
+
+```
+/skillhub-update
 ```
 
-Symlinks are relative inside the repo, so a pull is all that's needed.
+Or manually:
 
-## Available Skills
+```bash
+cd ~/.local/share/skillhub && git pull
 
-| Skill | Plugin | Description |
-|---|---|---|
-| `mdresearch` | md3step | Research codebase from context file |
-| `mdplan` | md3step | Generate implementation plan |
-| `mdrefine` | md3step | Refine plan with inline answers |
-| `mdimplement` | md3step | Execute plan with verification |
-| `setup` | dev-essentials | Project setup |
-| `codereview` | dev-essentials | Code review |
-| `procon3` / `pc3` | dev-essentials | Pro/con analysis |
-| `issue` | dev-essentials | Issue management |
-| `cleanup` | dev-essentials | Cleanup analysis |
-| `secure` | dev-essentials | Security review |
+# Re-link any new skills added since install
+for plugin in ~/.local/share/skillhub/plugins/*/; do
+  for skill in "$plugin"skills/*/; do
+    ln -sfn "$skill" ~/.opencode/skills/
+  done
+done
+```
 
 ## Project Rules (AGENTS.md)
 

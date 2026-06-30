@@ -1,5 +1,0 @@
-# Local Environment (copy this file to LOCAL_AGENTS.md and fill in)
-
-## Runtime
-- Language/runtime: <e.g. node 20, python 3.12, go 1.22>
-- Run commands as: <e.g. npm run, uv run, go run>

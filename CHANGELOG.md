@@ -2,6 +2,18 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.5.3] - 2026-06-30
+
+**Changed:**
+- dev-essentials v1.8.4:
+  - `skillhub-update` skill: rewrote `upgrade-opencode.sh` — replaced bun/npm plugin logic with git pull on `~/.local/share/skillhub` + symlink sync to `~/.opencode/skills/`; prints install instructions if repo not cloned
+  - Updated `README_OPENCODE.md` `## Update` section to reference `/skillhub-update` and include idempotent manual fallback with `ln -sfn`
+
+**Plugins:**
+- dev-essentials v1.8.4
+
+---
+
 ## [1.5.2] - 2026-06-24
 
 **Changed:**

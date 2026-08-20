@@ -1,39 +1,57 @@
 {
-  "extends": "base",
+  "extends": "default",
   "meta": {
     "name": "claude-mac",
     "version": "1.0.0",
     "description": "Claude Code, macOS sandbox"
   },
+  "groups": {
+    "include": ["node_runtime", "python_runtime", "go_runtime", "git_config"]
+  },
   "workdir": {
-    "access": "readwrite" // Claude Code must edit files in the working directory
+    "access": "readwrite"
   },
   "filesystem": {
-    // Read-only: specific subdirs Claude Code needs at startup.
-    // Intentionally NOT "$HOME" — nono blocks any grant that overlaps its own
-    // protected state root at ~/.local/state/nono.
+    // Broad parent paths are safe on macOS — seatbelt (unlike Landlock on Linux)
+    // can enforce deny-within-allow so no overlap conflicts arise.
     "read": [
       "$HOME/.config",      // app/tool configs (npm, gh, etc.)
       "$HOME/.local/share", // app data (node, python, etc.)
       "$HOME/Library"       // macOS app support dirs (frameworks, caches)
     ],
-    // Read+write: Claude's config directory (settings, conversation history, etc.).
-    // Add more paths here for standing access to other local project dirs, e.g.
-    // "$HOME/code/other-project" — or pass one-off dirs via repeated `--allow <path>`
-    // on the CLI instead. See README.md §7.
     "allow": [
-      "$HOME/.claude"
+      "$HOME/.cache",
+      "$HOME/.agents",
+      "/tmp",
+      "$HOME/.claude"       // config, history, AND auth
     ],
     "allow_file": [
-      "$HOME/.claude.json",       // top-level Claude Code config (model, theme, etc.)
-      "$HOME/.claude.json.lock",  // held during config reads; must be visible to avoid ENOENT
+      "$HOME/.claude.json",        // top-level Claude Code config (model, theme, etc.)
+      "$HOME/.claude.json.lock",   // held during config reads; must be visible to avoid ENOENT
       "$HOME/.CFUserTextEncoding", // macOS locale/encoding bootstrap
-      "$HOME/.local/bin/claude"   // the Claude Code binary itself
+      "$HOME/.local/bin/claude"    // the Claude Code binary itself
     ],
-    // Claude writes this lockfile on startup for concurrent-instance detection
     "write_file": [
-      "$HOME/.claude.lock"
+      "$HOME/.claude.lock"         // Claude writes this on startup for concurrent-instance detection
+    ],
+    // Paths Claude Code touches at shutdown that we want silently denied — no interactive
+    // review prompt. Browser dirs are already blocked by deny_browser_data_* groups.
+    "suppress_save_prompt": [
+      "$HOME",
+      "$HOME/Applications/Claude Code URL Handler.app",
+      "$HOME/Applications/Claude Code URL Handler.app/Contents/MacOS/claude",
+      "$HOME/Library/Application Support/Arc/User Data",
+      "$HOME/Library/Application Support/BraveSoftware/Brave-Browser",
+      "$HOME/Library/Application Support/Chromium",
+      "$HOME/Library/Application Support/Google/Chrome",
+      "$HOME/Library/Application Support/Microsoft Edge",
+      "$HOME/Library/Application Support/Vivaldi",
+      "$HOME/Library/Application Support/com.operasoftware.Opera",
+      "/home"
     ]
+  },
+  "environment": {
+    "allow_vars": ["PATH", "HOME", "TERM", "LANG"]
   },
   "network": {
     // Only Anthropic endpoints — everything else (curl, git push/pull, etc.) is blocked
@@ -42,13 +60,10 @@
       "api.anthropic.com"  // inference API
     ]
   },
-  // Raw macOS seatbelt rule: CFPreferences/NSUserDefaults (locale, timezone) read at
-  // startup — needed for basic macOS process initialisation
+  // CFPreferences/NSUserDefaults (locale, timezone) read at startup
   "unsafe_macos_seatbelt_rules": [
     "(allow user-preference-read)"
   ],
-  // Required for Claude Code to open URLs (e.g. browser-based auth, docs links)
-  "allow_launch_services": true,
-  // Keep stdin/stdout attached — Claude Code is an interactive CLI
+  "allow_launch_services": true,   // required for Claude Code to open URLs (browser-based auth, etc.)
   "interactive": true
 }

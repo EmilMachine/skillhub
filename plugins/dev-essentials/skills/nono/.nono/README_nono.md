@@ -24,11 +24,14 @@ Also packaged for Arch (`yay -S nono-ai-bin`) and Fedora/RHEL (rpm via the site)
 Profiles live in `~/.config/nono/profiles/`. Copy the one for your OS from this folder:
 
 ```sh
+# make profiles dir
+mkdir -p ~/.config/nono/profiles
+
 # macOS
-cp claude-mac.jsonc ~/.config/nono/profiles/claude-mac.json
+cp .nono/claude-mac.jsonc ~/.config/nono/profiles/claude-mac.jsonc
 
 # Linux
-cp claude-linux.jsonc ~/.config/nono/profiles/claude-linux.json
+cp .nono/claude-linux.jsonc ~/.config/nono/profiles/claude-linux.jsonc
 ```
 
 - [`claude-mac.jsonc`](./claude-mac.jsonc) — includes macOS-only bits: Keychain-adjacent seatbelt rule, Launch Services (for opening URLs), `~/Library` read.
@@ -58,7 +61,26 @@ claude   # log in once, plain, no nono
 - **macOS:** creds land in Keychain, which the sandbox can't read directly — see the shell shortcut below, which extracts a token before each run.
 - **Linux:** creds land straight in `~/.claude/.credentials.json`, which is already inside the `~/.claude` grant — no extra step needed, `nono-claude` just runs `claude` directly.
 
-## 4. Shell shortcut
+
+## 4. Web variant — open network
+
+`claude-mac.jsonc`/`claude-linux.jsonc` lock the network down to `claude.ai` + `api.anthropic.com`, so `WebSearch`/`WebFetch`, package installs, and arbitrary `curl` calls all fail. For sessions that need real internet access — but should still keep filesystem/command sandboxing — use the `-web` profiles instead:
+
+```sh
+# macOS
+cp .nono/claude-mac-web.jsonc ~/.config/nono/profiles/claude-mac-web.json
+nono run --profile claude-mac-web --allow-cwd -- claude --dangerously-skip-permissions
+
+# Linux
+cp .nono/claude-linux-web.jsonc ~/.config/nono/profiles/claude-linux-web.json
+nono run --profile claude-linux-web --allow-cwd -- claude --dangerously-skip-permissions
+```
+
+These extend `base` (not `claude-mac`/`claude-linux`) — nono profile inheritance only ever *adds* to inherited lists, so a domain allowlist set by a parent can't be widened or cleared by a child. The web variants just never set one, which leaves network unrestricted (nono's default when no `allow_domain`/`network-profile` is applied).
+
+> **Trade-off:** this removes the network egress guardrail. Filesystem/command restrictions are unchanged, but a prompt-injected or misbehaving agent can now reach any host, including exfiltrating whatever it can read locally. Default to the restricted profile; reach for `-web` only for the session that needs it.
+
+## 5. Shell shortcut
 
 Add to `~/.bashrc` / `~/.zshrc`:
 
@@ -69,12 +91,24 @@ nono-claude() {
     > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json \
     && nono run --profile claude-mac --allow-cwd -- claude --dangerously-skip-permissions "$@"
 }
+
+nonoweb-claude() {
+  security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
+    > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json \
+    && nono run --profile claude-mac-web --allow-cwd -- claude --dangerously-skip-permissions "$@"
+}
+
 ```
+
 
 **Linux** — no credential extraction needed:
 ```sh
 nono-claude() {
   nono run --profile claude-linux --allow-cwd -- claude --dangerously-skip-permissions "$@"
+}
+
+nonoweb-claude() {
+  nono run --profile claude-linux-web --allow-cwd -- claude --dangerously-skip-permissions "$@"
 }
 ```
 
@@ -84,23 +118,6 @@ Reload (`source ~/.zshrc`), then just run:
 nono-claude
 ```
 
-## 5. Web variant — open network
-
-`claude-mac.jsonc`/`claude-linux.jsonc` lock the network down to `claude.ai` + `api.anthropic.com`, so `WebSearch`/`WebFetch`, package installs, and arbitrary `curl` calls all fail. For sessions that need real internet access — but should still keep filesystem/command sandboxing — use the `-web` profiles instead:
-
-```sh
-# macOS
-cp claude-mac-web.jsonc ~/.config/nono/profiles/claude-mac-web.json
-nono run --profile claude-mac-web --allow-cwd -- claude --dangerously-skip-permissions
-
-# Linux
-cp claude-linux-web.jsonc ~/.config/nono/profiles/claude-linux-web.json
-nono run --profile claude-linux-web --allow-cwd -- claude --dangerously-skip-permissions
-```
-
-These extend `base` (not `claude-mac`/`claude-linux`) — nono profile inheritance only ever *adds* to inherited lists, so a domain allowlist set by a parent can't be widened or cleared by a child. The web variants just never set one, which leaves network unrestricted (nono's default when no `allow_domain`/`network-profile` is applied).
-
-> **Trade-off:** this removes the network egress guardrail. Filesystem/command restrictions are unchanged, but a prompt-injected or misbehaving agent can now reach any host, including exfiltrating whatever it can read locally. Default to the restricted profile; reach for `-web` only for the session that needs it.
 
 ## 6. Project-local profile (optional)
 
@@ -125,7 +142,7 @@ Runs `./.nono/local.jsonc` from whatever repo you're in, instead of the central 
 
 **macOS**
 ```sh
-nono-claude-local() {
+nonolocal-claude() {
   local profile="./.nono/local.jsonc"
   [[ -f "$profile" ]] || { echo "No $profile in $(pwd)"; return 1; }
   security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
@@ -136,7 +153,7 @@ nono-claude-local() {
 
 **Linux**
 ```sh
-nono-claude-local() {
+nonolocal-claude() {
   local profile="./.nono/local.jsonc"
   [[ -f "$profile" ]] || { echo "No $profile in $(pwd)"; return 1; }
   nono run --profile "$profile" --allow-cwd -- claude --dangerously-skip-permissions "$@"

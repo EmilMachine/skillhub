@@ -1,0 +1,11 @@
+{
+  "extends": "claude-mac",  // or "claude-linux" — pick the profile matching your OS. 
+  // add -web e.g. claude-mac-web if you need that.
+  "filesystem": {
+    // Grant readwrite access to a project folder outside the working directory.
+    // Safe to include: no credentials, no shell configs, no browser data.
+    "allow": ["$HOME/Movies"]
+  },
+  // List additional domains you allow
+  "network": { "allow_domain": ["wikipedia.org", "en.wikipedia.org"] }
+}

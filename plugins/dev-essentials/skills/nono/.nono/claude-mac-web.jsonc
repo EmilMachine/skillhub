@@ -1,27 +1,28 @@
 {
-  // NOTE: extends "base", NOT "claude-mac" — nono profile inheritance only ever
-  // *adds* to inherited lists (you can't remove/widen a restriction a parent set),
-  // so widening network access requires starting from base again, not narrowing.
-  "extends": "base",
+  "extends": "default",
   "meta": {
     "name": "claude-mac-web",
     "version": "1.0.0",
     "description": "Claude Code, macOS sandbox, unrestricted outbound network"
   },
+  "groups": {
+    "include": ["node_runtime", "python_runtime", "go_runtime", "git_config"]
+  },
   "workdir": {
-    "access": "readwrite" // Claude Code must edit files in the working directory
+    "access": "readwrite"
   },
   "filesystem": {
-    // Same local restrictions as claude-mac.jsonc — only network differs below.
+    // Broad parent paths are safe on macOS — seatbelt (unlike Landlock on Linux)
+    // can enforce deny-within-allow so no overlap conflicts arise.
     "read": [
       "$HOME/.config",      // app/tool configs (npm, gh, etc.)
       "$HOME/.local/share", // app data (node, python, etc.)
       "$HOME/Library"       // macOS app support dirs (frameworks, caches)
     ],
-    // Add more paths here for standing access to other local project dirs, e.g.
-    // "$HOME/code/other-project" — or pass one-off dirs via repeated `--allow <path>`
-    // on the CLI instead. See README.md §7.
     "allow": [
+      "$HOME/.cache",
+      "$HOME/.agents",
+      "/tmp",
       "$HOME/.claude"
     ],
     "allow_file": [
@@ -34,14 +35,15 @@
       "$HOME/.claude.lock"
     ]
   },
-  // No "allow_domain" list — leaves network unrestricted (nono's default when no
-  // domain allowlist / network-profile is applied), so WebSearch/WebFetch, npm/pip
+  "environment": {
+    "allow_vars": ["PATH", "HOME", "TERM", "LANG"]
+  },
+  // No allow_domain — leaves network unrestricted so WebSearch/WebFetch, npm/pip
   // installs, arbitrary curl, etc. all work.
   //
-  // CAUTION: this removes the network egress guardrail. Filesystem/command
-  // restrictions still apply, but a prompt-injected or misbehaving agent can now
-  // reach any host — including exfiltrating whatever it can read locally. Prefer
-  // claude-mac.jsonc unless you specifically need open web access for this session.
+  // CAUTION: removes the network egress guardrail. Filesystem/command restrictions
+  // still apply, but a prompt-injected agent can now reach any host. Prefer
+  // claude-mac.jsonc unless you specifically need open web access.
   "network": {
     "block": false
   },

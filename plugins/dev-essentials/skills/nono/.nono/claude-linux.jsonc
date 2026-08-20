@@ -1,0 +1,47 @@
+{
+  "extends": "base",
+  "meta": {
+    "name": "claude-linux",
+    "version": "1.0.0",
+    "description": "Claude Code, Linux sandbox"
+  },
+  "workdir": {
+    "access": "readwrite" // Claude Code must edit files in the working directory
+  },
+  "filesystem": {
+    // Read-only: specific subdirs Claude Code needs at startup (XDG dirs).
+    // Intentionally NOT "$HOME" — nono blocks any grant that overlaps its own
+    // protected state root at ~/.local/state/nono.
+    "read": [
+      "$HOME/.config",     // app/tool configs (npm, gh, etc.)
+      "$HOME/.local/share" // app data (node, python, etc.)
+    ],
+    // Read+write: Claude's config directory. Credentials on Linux live in a plain
+    // ~/.claude/.credentials.json file (no OS keyring involved), so this one grant
+    // covers config, history, AND auth — no keychain-extraction step needed.
+    // Add more paths here for standing access to other local project dirs, e.g.
+    // "$HOME/code/other-project" — or pass one-off dirs via repeated `--allow <path>`
+    // on the CLI instead. See README.md §7.
+    "allow": [
+      "$HOME/.claude"
+    ],
+    "allow_file": [
+      "$HOME/.claude.json",      // top-level Claude Code config (model, theme, etc.)
+      "$HOME/.claude.json.lock", // held during config reads; must be visible to avoid ENOENT
+      "$HOME/.local/bin/claude"  // the Claude Code binary itself
+    ],
+    // Claude writes this lockfile on startup for concurrent-instance detection
+    "write_file": [
+      "$HOME/.claude.lock"
+    ]
+  },
+  "network": {
+    // Only Anthropic endpoints — everything else (curl, git push/pull, etc.) is blocked
+    "allow_domain": [
+      "claude.ai",         // web UI / auth flows
+      "api.anthropic.com"  // inference API
+    ]
+  },
+  // Keep stdin/stdout attached — Claude Code is an interactive CLI
+  "interactive": true
+}

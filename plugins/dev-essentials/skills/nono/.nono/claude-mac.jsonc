@@ -1,0 +1,54 @@
+{
+  "extends": "base",
+  "meta": {
+    "name": "claude-mac",
+    "version": "1.0.0",
+    "description": "Claude Code, macOS sandbox"
+  },
+  "workdir": {
+    "access": "readwrite" // Claude Code must edit files in the working directory
+  },
+  "filesystem": {
+    // Read-only: specific subdirs Claude Code needs at startup.
+    // Intentionally NOT "$HOME" — nono blocks any grant that overlaps its own
+    // protected state root at ~/.local/state/nono.
+    "read": [
+      "$HOME/.config",      // app/tool configs (npm, gh, etc.)
+      "$HOME/.local/share", // app data (node, python, etc.)
+      "$HOME/Library"       // macOS app support dirs (frameworks, caches)
+    ],
+    // Read+write: Claude's config directory (settings, conversation history, etc.).
+    // Add more paths here for standing access to other local project dirs, e.g.
+    // "$HOME/code/other-project" — or pass one-off dirs via repeated `--allow <path>`
+    // on the CLI instead. See README.md §7.
+    "allow": [
+      "$HOME/.claude"
+    ],
+    "allow_file": [
+      "$HOME/.claude.json",       // top-level Claude Code config (model, theme, etc.)
+      "$HOME/.claude.json.lock",  // held during config reads; must be visible to avoid ENOENT
+      "$HOME/.CFUserTextEncoding", // macOS locale/encoding bootstrap
+      "$HOME/.local/bin/claude"   // the Claude Code binary itself
+    ],
+    // Claude writes this lockfile on startup for concurrent-instance detection
+    "write_file": [
+      "$HOME/.claude.lock"
+    ]
+  },
+  "network": {
+    // Only Anthropic endpoints — everything else (curl, git push/pull, etc.) is blocked
+    "allow_domain": [
+      "claude.ai",         // web UI / auth flows
+      "api.anthropic.com"  // inference API
+    ]
+  },
+  // Raw macOS seatbelt rule: CFPreferences/NSUserDefaults (locale, timezone) read at
+  // startup — needed for basic macOS process initialisation
+  "unsafe_macos_seatbelt_rules": [
+    "(allow user-preference-read)"
+  ],
+  // Required for Claude Code to open URLs (e.g. browser-based auth, docs links)
+  "allow_launch_services": true,
+  // Keep stdin/stdout attached — Claude Code is an interactive CLI
+  "interactive": true
+}

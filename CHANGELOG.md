@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.6.0] - 2026-08-20
+
+**Added:**
+- dev-essentials v1.9.0:
+  - `nono` skill: stamps a `.nono` folder (sandboxed Claude Code profiles for [nono](https://nono.sh)) into a target directory, mirroring the `devcontainer` skill's copy pattern (`-f` to overwrite, defaults to cwd). Bundles `claude-{mac,linux}[-web].jsonc` profiles and `README_nono.md` (central-install + usage instructions).
+
+**Plugins:**
+- dev-essentials v1.9.0
+
+---
+
 ## [1.5.3] - 2026-06-30
 
 **Changed:**

@@ -2,6 +2,19 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.6.1] - 2026-08-20
+
+**Fixed:**
+- dev-essentials v1.9.1:
+  - `nono` skill: hardened bundled profiles (`claude-mac.jsonc`, `claude-linux.jsonc`, `claude-mac-web.jsonc`, `claude-linux-web.jsonc`) — extend `default` instead of `base`, add `groups`/`environment.allow_vars`, tighten Linux read grants to avoid Landlock deny-within-allow conflicts, add `suppress_save_prompt` to `claude-mac.jsonc`
+  - `README_nono.md`: fixed install commands to reference `.nono/<file>.jsonc` paths, moved the web-variant section, renamed shell shortcuts (`nonoweb-claude`, `nonolocal-claude`)
+  - Added `local.jsonc` — example project-local profile extending `claude-mac`
+
+**Plugins:**
+- dev-essentials v1.9.1
+
+---
+
 ## [1.6.0] - 2026-08-20
 
 **Added:**

@@ -1,0 +1,16 @@
+{
+  "name": "dev-py",
+  "version": "0.1.0",
+  "description": "Python dev workflow: type-check, docstrings, lint/format, aggregate fix, project setup",
+  "author": {
+    "name": "Emil",
+    "email": "sl.askmachine+skillhub@gmail.com"
+  },
+  "skills": [
+    "./skills/pydoc",
+    "./skills/mypy",
+    "./skills/ruff",
+    "./skills/pyfix",
+    "./skills/pysetup"
+  ]
+}

@@ -2,6 +2,32 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.8.0] - 2026-08-21
+
+**Added:**
+- dev-essentials v1.10.0:
+  - `changelog` skill: appends a terse entry to a target repo's CHANGELOG.md from a source file, branch diff, or freetext instructions — creates the file if missing, detects an optional version bump, never alters existing entries
+
+**Plugins:**
+- dev-essentials v1.10.0
+
+---
+
+## [1.7.0] - 2026-08-21
+
+**Added:**
+- dev-py plugin v0.1.0 (new plugin): Python dev workflow skills —
+  - `pydoc`: Google-style docstrings for functions/modules, argparse epilogs for CLIs
+  - `mypy`: run mypy, fix type errors in priority order (narrow → annotate → cast → `type: ignore`)
+  - `ruff`: thin script wrapper running `ruff format` + `ruff check --fix`
+  - `pyfix`: aggregate — invokes pydoc, mypy, ruff in sequence
+  - `pysetup`: invokes `dev-essentials` `setup`, then adds `uv`/`ruff` conventions to `AGENTS.md`
+
+**Plugins:**
+- dev-py v0.1.0
+
+---
+
 ## [1.6.1] - 2026-08-20
 
 **Fixed:**

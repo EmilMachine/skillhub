@@ -63,6 +63,10 @@ Stamp out a `.nono` folder (sandboxed Claude Code profiles for [nono](https://no
 - **Input:** `[-f] [path]`
 - **Usage:** `/nono [-f] [path]`
 
+### `/changelog`
+Append a terse entry to `CHANGELOG.md` from a source file, a branch diff, or freetext instructions.
+- **Input:** `<path-to-source-changelog> | "branch <name>" | "<freetext instructions>"`
+
 ## Features
 
 - Terse, report-driven outputs (`myreports/`) for review/cleanup/security skills

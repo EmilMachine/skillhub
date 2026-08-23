@@ -18,6 +18,7 @@ argument-hint: path/to/2_plan.md
    - Per-step: Status (✓/⚠/✗), Files (`path:line`), Verify output
    - Test Results, Known Issues
    - at the top put a `# Gothas` section if issues arose with terse "- <title>:\n  - challenge: ... \n  - solution: ..." format.
+   - don't use other skills to write 3_changelog.md
 6. Compact the 3_changelog.md try making it ~50% of length.
 7. Output: "✨ Implementation complete ✨. Created 3_changelog.md [X/Y steps, Z tests passed]"
 

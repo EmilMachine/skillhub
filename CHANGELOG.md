@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.8.1] - 2026-08-23
+
+**Fixed:**
+- dev-essentials v1.10.1:
+  - `issue` skill: when the browser can't be opened automatically and the URL fallback is used, the raw URL got split across lines by terminal rendering and couldn't be pasted — now prints a `echo <base64> | base64 -d | xargs open` one-liner as the final fallback instead
+
+**Plugins:**
+- dev-essentials v1.10.1
+
+---
+
 ## [1.8.0] - 2026-08-21
 
 **Added:**

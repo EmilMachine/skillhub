@@ -104,4 +104,10 @@ if open "$URL" 2>/dev/null || xdg-open "$URL" 2>/dev/null; then
   echo "✓ Opened in browser"
 else
   echo "⚠️ Could not open browser automatically"
+  echo ""
+  echo "The raw URL above may get split across lines by terminal rendering and fail to paste."
+  echo "Run this instead — it decodes and opens it in one shot (swap 'open' for 'xdg-open' on Linux):"
+  echo ""
+  B64=$(printf '%s' "$URL" | base64 | tr -d '\n')
+  echo "  echo $B64 | base64 -d | xargs open"
 fi

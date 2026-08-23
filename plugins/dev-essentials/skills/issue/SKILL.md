@@ -50,4 +50,5 @@ ISSUE_TITLE="<TITLE>" ISSUE_TEXT="<BODY content>" bash "<BASE_DIR>/create_issue.
 **If the script output contains "Could not create issue automatically":**
 - Extract the URL from the output
 - If the script did not report "✓ Opened in browser", run: `open "<URL>" 2>/dev/null || xdg-open "<URL>" 2>/dev/null` via Bash
-- Always repeat the URL as plain assistant text (not inside a tool block) so the user can see and copy it
+- If that also fails, the script prints a `echo <base64> | base64 -d | xargs open` command — surface that command to the user as plain assistant text instead of the raw URL (long URLs get split across lines by terminal rendering and become unpasteable; the base64 one-liner avoids that)
+- Otherwise (open succeeded, or as a last resort), repeat the URL as plain assistant text (not inside a tool block) so the user can see and copy it

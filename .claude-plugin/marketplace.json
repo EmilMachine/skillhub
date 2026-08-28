@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A curated Claude Code skill marketplace for personal development workflows",
-    "version": "1.8.2",
+    "version": "1.9.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -20,7 +20,7 @@
       "name": "dev-essentials",
       "source": "./plugins/dev-essentials",
       "description": "Dev workflow essentials: project setup, code review, cleanup analysis, pro/con",
-      "version": "1.10.2"
+      "version": "1.11.0"
     },
     {
       "name": "dev-py",

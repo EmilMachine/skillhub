@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.9.0] - 2026-08-28
+
+**Added:**
+- dev-essentials v1.11.0:
+  - `ding` skill: installs/updates a `Stop`-hook sound notifier (global `~/.claude/settings.json` or project-local, gitignored `.claude/settings.local.json`), optionally gated by a minimum turn-duration threshold in seconds. One deduplicated hook per scope — re-running with new args updates it in place instead of adding duplicates; `off` disables without removing it. Bundles a generated chime (`ding.wav`); cross-platform playback (afplay/paplay/aplay/ffplay/sox, terminal-bell fallback) that never blocks or fails the hook.
+
+**Plugins:**
+- dev-essentials v1.11.0
+
+---
+
 ## [1.8.2] - 2026-08-28
 
 **Fixed:**

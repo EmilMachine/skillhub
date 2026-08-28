@@ -67,10 +67,15 @@ Stamp out a `.nono` folder (sandboxed Claude Code profiles for [nono](https://no
 Append a terse entry to `CHANGELOG.md` from a source file, a branch diff, or freetext instructions.
 - **Input:** `<path-to-source-changelog> | "branch <name>" | "<freetext instructions>"`
 
+### `/ding`
+Install/update a `Stop`-hook sound notifier — dings when Claude finishes a turn, optionally only for turns longer than N seconds. Global or project-local (gitignored `settings.local.json`); one hook per scope, re-running updates it in place; `off` disables without removing it.
+- **Input:** `[local] [off|<seconds>[s]]`
+- **Usage:** `/ding`, `/ding local`, `/ding off`, `/ding local off`, `/ding 60`, `/ding local 80`
+
 ## Features
 
 - Terse, report-driven outputs (`myreports/`) for review/cleanup/security skills
-- Stamping skills (`devcontainer`, `nono`) copy bundled templates into a target dir, with `-f` to overwrite
+- Stamping skills (`devcontainer`, `nono`, `ding`) copy bundled templates into a target dir, with `-f` to overwrite (or idempotent re-run for `ding`)
 - No automatic git commits or destructive actions
 
 ## Installation

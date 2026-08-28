@@ -2,6 +2,24 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.8.2] - 2026-08-28
+
+**Fixed:**
+- dev-essentials v1.10.2:
+  - `nono` skill: source folder renamed `.nono` → `nono` (dotfile hid it from listings/editors); updated all references in `SKILL.md`, `README_nono.md`, `nono.sh`, and `claude_build_in_sandbox.md`
+  - `nono.sh` now copies every file from the source `nono/` folder directly into the destination instead of copying the directory as one unit, so a forced re-copy (`-f`) can't leave stale files behind
+  - fixed a copy-paste typo in `codex-mac.jsonc`'s header comment (`cp` referenced `claude-mac.jsonc` instead of `codex-mac.jsonc`)
+
+**Changed:**
+- dev-essentials v1.10.2:
+  - `nono` skill: `nono.sh` now writes a `.gitignore` (`*`) into the stamped-out destination folder so it isn't tracked by the target project's git repo
+  - all `nono/*.jsonc` profiles got a header comment documenting the run/central-profile-install commands (matching `codex-mac.jsonc`'s existing format), plus a link to https://nono.sh/docs/cli/features/profiles-groups under `groups.include`; the `claude-*` profiles additionally note the macOS Keychain-extraction step `codex-*` doesn't need
+
+**Plugins:**
+- dev-essentials v1.10.2
+
+---
+
 ## [1.8.1] - 2026-08-23
 
 **Fixed:**

@@ -1,0 +1,56 @@
+{
+  // == Run with ==
+  // nono run --profile ./nono/codex-linux.jsonc --allow-cwd -- codex --sandbox danger-full-access "$@"
+  // == Put in central profile ==
+  // mkdir -p ~/.config/nono/profiles
+  // cp nono/codex-linux.jsonc ~/.config/nono/profiles/codex-linux.jsonc
+  // nono run --profile codex-linux --allow-cwd -- codex --sandbox danger-full-access "$@"
+
+  "extends": "default",
+  "meta": {
+    "name": "codex-linux",
+    "version": "1.0.0",
+    "description": "OpenAI Codex CLI, Linux sandbox"
+  },
+  "groups": {
+    "include": ["node_runtime", "python_runtime", "go_runtime", "git_config"]
+    // see more https://nono.sh/docs/cli/features/profiles-groups
+  },
+  "workdir": {
+    "access": "readwrite"
+  },
+  "filesystem": {
+    // Read-only. Enumerate specific subdirs rather than broad parents to avoid
+    // conflicts with Landlock deny rules from the default profile.
+    "read": [
+      "/proc",
+      "/opt/google/chrome/",
+      "$HOME/.config/npm",         // npm config
+      "$HOME/.local/share/npm",    // npm global data
+      "$HOME/.local/share/node_modules",
+      "/etc/codex"                 // system-wide codex config (read-only)
+    ],
+    "allow": [
+      "$HOME/.cache",
+      "$HOME/.agents",
+      "$HOME/.config/google-chrome/",
+      "/tmp",
+      "$HOME/.codex"               // config, credentials, sessions, logs, state DB (Linux uses file fallback, no keyring)
+    ],
+    "allow_file": [
+      "$HOME/.local/bin/codex"     // the Codex CLI binary itself
+    ]
+  },
+  "environment": {
+    "allow_vars": ["PATH", "HOME", "TERM", "LANG", "OPENAI_API_KEY", "CODEX_HOME"]
+  },
+  "network": {
+    // Only OpenAI endpoints — everything else (curl, git push/pull, etc.) is blocked
+    "allow_domain": [
+      "api.openai.com",     // inference API
+      "auth.openai.com",    // OAuth token refresh
+      "chatgpt.com"         // ChatGPT / Codex backend flows
+    ]
+  },
+  "interactive": true
+}

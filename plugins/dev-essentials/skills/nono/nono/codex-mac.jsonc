@@ -1,0 +1,71 @@
+{ 
+  // == Run with == 
+  // nono run --profile ./nono/codex-mac.jsonc --allow-cwd -- codex --sandbox danger-full-access "$@"
+  // == Put in central profile ==
+  // mkdir -p ~/.config/nono/profiles
+  // cp nono/codex-mac.jsonc ~/.config/nono/profiles/codex-mac.jsonc
+  // nono run --profile codex-mac --allow-cwd -- codex --sandbox danger-full-access "$@"
+  "extends": "default",
+  "meta": {
+    "name": "codex-mac",
+    "version": "1.0.0",
+    "description": "OpenAI Codex CLI, macOS sandbox"
+  },
+  "groups": {
+    "include": ["node_runtime", "python_runtime", "go_runtime", "git_config"]
+    // see more https://nono.sh/docs/cli/features/profiles-groups
+  },
+  "workdir": {
+    "access": "readwrite"
+  },
+  "filesystem": {
+    // Broad parent paths are safe on macOS — seatbelt (unlike Landlock on Linux)
+    // can enforce deny-within-allow so no overlap conflicts arise.
+    "read": [
+      "$HOME/.config/npm",         // npm config
+      "$HOME/.local/share/npm",    // npm global data
+      "$HOME/.local/share/node_modules",
+      "$HOME/Library",             // macOS app support dirs (frameworks, caches)
+      "/etc/codex"                 // system-wide codex config (read-only)
+    ],
+    "allow": [
+      "$HOME/.cache",
+      "$HOME/.agents",
+      "/tmp",               // potential escape; tighter would be "/tmp/nono-$SESSION_ID"
+      "$HOME/.codex"        // config, credentials, sessions, logs, state DB
+    ],
+    "allow_file": [
+      "$HOME/.CFUserTextEncoding", // macOS locale/encoding bootstrap
+      "$HOME/.local/bin/codex"     // the Codex CLI binary itself
+    ],
+    // Paths Codex touches at shutdown that we want silently denied — no interactive
+    // review prompt. Browser dirs are already blocked by deny_browser_data_* groups.
+    "suppress_save_prompt": [
+      "$HOME",
+      "$HOME/Library/Application Support/Arc/User Data",
+      "$HOME/Library/Application Support/BraveSoftware/Brave-Browser",
+      "$HOME/Library/Application Support/Chromium",
+      "$HOME/Library/Application Support/Google/Chrome",
+      "$HOME/Library/Application Support/Microsoft Edge",
+      "$HOME/Library/Application Support/Vivaldi",
+      "$HOME/Library/Application Support/com.operasoftware.Opera",
+      "/home"
+    ]
+  },
+  "environment": {
+    "allow_vars": ["PATH", "HOME", "TERM", "LANG", "OPENAI_API_KEY", "CODEX_HOME"]
+  },
+  "network": {
+    // Only OpenAI endpoints — everything else (curl, git push/pull, etc.) is blocked
+    "allow_domain": [
+      "api.openai.com",     // inference API
+      "auth.openai.com",    // OAuth token refresh
+      "chatgpt.com"         // ChatGPT / Codex backend flows
+    ]
+  },
+  // CFPreferences/NSUserDefaults (locale, timezone) read at startup
+  "unsafe_macos_seatbelt_rules": [
+    "(allow user-preference-read)"
+  ],
+  "interactive": true
+}

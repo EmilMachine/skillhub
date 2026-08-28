@@ -28,10 +28,10 @@ Profiles live in `~/.config/nono/profiles/`. Copy the one for your OS from this 
 mkdir -p ~/.config/nono/profiles
 
 # macOS
-cp .nono/claude-mac.jsonc ~/.config/nono/profiles/claude-mac.jsonc
+cp nono/claude-mac.jsonc ~/.config/nono/profiles/claude-mac.jsonc
 
 # Linux
-cp .nono/claude-linux.jsonc ~/.config/nono/profiles/claude-linux.jsonc
+cp nono/claude-linux.jsonc ~/.config/nono/profiles/claude-linux.jsonc
 ```
 
 - [`claude-mac.jsonc`](./claude-mac.jsonc) — includes macOS-only bits: Keychain-adjacent seatbelt rule, Launch Services (for opening URLs), `~/Library` read.
@@ -68,11 +68,11 @@ claude   # log in once, plain, no nono
 
 ```sh
 # macOS
-cp .nono/claude-mac-web.jsonc ~/.config/nono/profiles/claude-mac-web.json
+cp nono/claude-mac-web.jsonc ~/.config/nono/profiles/claude-mac-web.jsonc
 nono run --profile claude-mac-web --allow-cwd -- claude --dangerously-skip-permissions
 
 # Linux
-cp .nono/claude-linux-web.jsonc ~/.config/nono/profiles/claude-linux-web.json
+cp nono/claude-linux-web.jsonc ~/.config/nono/profiles/claude-linux-web.jsonc
 nono run --profile claude-linux-web --allow-cwd -- claude --dangerously-skip-permissions
 ```
 
@@ -123,7 +123,7 @@ nono-claude
 
 Only needed if one repo requires extra grants (e.g. an internal API domain). Skip otherwise — the central profile above covers normal use.
 
-`./.nono/local.jsonc` in the repo:
+`./nono/local.jsonc` in the repo:
 
 ```jsonc
 {
@@ -133,17 +133,17 @@ Only needed if one repo requires extra grants (e.g. an internal API domain). Ski
 ```
 
 ```sh
-nono run --profile ./.nono/local.jsonc --allow-cwd -- claude --dangerously-skip-permissions
+nono run --profile ./nono/local.jsonc --allow-cwd -- claude --dangerously-skip-permissions
 ```
 
 ## 7. Shell shortcut for the local profile
 
-Runs `./.nono/local.jsonc` from whatever repo you're in, instead of the central profile. Add alongside `nono-claude` (§4) in `~/.bashrc` / `~/.zshrc`:
+Runs `./nono/local.jsonc` from whatever repo you're in, instead of the central profile. Add alongside `nono-claude` (§4) in `~/.bashrc` / `~/.zshrc`:
 
 **macOS**
 ```sh
 nonolocal-claude() {
-  local profile="./.nono/local.jsonc"
+  local profile="./nono/local.jsonc"
   [[ -f "$profile" ]] || { echo "No $profile in $(pwd)"; return 1; }
   security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
     > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json \
@@ -154,13 +154,13 @@ nonolocal-claude() {
 **Linux**
 ```sh
 nonolocal-claude() {
-  local profile="./.nono/local.jsonc"
+  local profile="./nono/local.jsonc"
   [[ -f "$profile" ]] || { echo "No $profile in $(pwd)"; return 1; }
   nono run --profile "$profile" --allow-cwd -- claude --dangerously-skip-permissions "$@"
 }
 ```
 
-Reload, then run `nono-claude-local` from the repo root. Errors out with a clear message if that repo has no `.nono/local.jsonc` — use plain `nono-claude` there instead.
+Reload, then run `nono-claude-local` from the repo root. Errors out with a clear message if that repo has no `nono/local.jsonc` — use plain `nono-claude` there instead.
 
 ## 8. Multiple local directories
 

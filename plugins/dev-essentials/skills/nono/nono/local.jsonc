@@ -1,0 +1,19 @@
+{
+  // == Run with (see README_nono.md §6-7) ==
+  // NOTE: this extends a claude-* profile, so Claude's extra run step still applies —
+  // on macOS, extract the Keychain token first (README §5):
+  //   security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
+  //     > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json
+  // nono run --profile ./nono/local.jsonc --allow-cwd -- claude --dangerously-skip-permissions "$@"
+  // Or use the nonolocal-claude shell shortcut (README §7).
+
+  "extends": "claude-mac",  // or "claude-linux" — pick the profile matching your OS.
+  // add -web e.g. claude-mac-web if you need that.
+  "filesystem": {
+    // Grant readwrite access to a project folder outside the working directory.
+    // Safe to include: no credentials, no shell configs, no browser data.
+    "allow": ["$HOME/Movies"]
+  },
+  // List additional domains you allow
+  "network": { "allow_domain": ["wikipedia.org", "en.wikipedia.org"] }
+}

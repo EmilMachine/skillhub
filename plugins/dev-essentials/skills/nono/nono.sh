@@ -13,20 +13,18 @@ while [[ $# -gt 0 ]]; do
 done
 
 TARGET="$(realpath "$TARGET")"
-DEST="$TARGET/.nono"
+DEST="$TARGET/nono"
 
 if [[ -d "$DEST" ]] && [[ "$FORCE" == false ]]; then
-  echo "❌ .nono already exists at $DEST"
+  echo "❌ nono already exists at $DEST"
   echo "   Use -f to overwrite."
   exit 1
 fi
 
-if [[ "$FORCE" == true ]]; then
-  cp -rf "$SCRIPT_DIR/.nono" "$TARGET/"
-else
-  cp -r "$SCRIPT_DIR/.nono" "$TARGET/"
-fi
-echo "✅ .nono copied to $DEST"
+mkdir -p "$DEST"
+cp -r "$SCRIPT_DIR"/nono/. "$DEST"/
+echo "*" > "$DEST/.gitignore"
+echo "✅ nono copied to $DEST"
 echo ""
 echo "Files:"
 find "$DEST" -type f | sed "s|$TARGET/||"

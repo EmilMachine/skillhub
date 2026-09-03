@@ -2,6 +2,66 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.10.4] - 2026-09-03
+
+**Added:**
+- dev-essentials v1.13.0:
+  - `issue` skill: `create_issue.sh` now appends `plugin_version`/`skillhub_version` fields to every issue body, read from the actually installed state (Claude Code's `installed_plugins.json`, or a sibling `plugin.json`/`marketplace.json` for git-clone/symlink installs) instead of left for the model to guess — surfaces version drift (e.g. reporting a bug already fixed in a newer release) immediately
+
+**Plugins:**
+- dev-essentials v1.13.0
+
+---
+
+## [1.10.3] - 2026-09-03
+
+**Fixed:**
+- dev-essentials v1.12.2:
+  - `codereview` skill: `codereview.sh` fallback after a failed `git fetch origin <branch>` (e.g. sandboxed SSH) now also checks `refs/remotes/origin/<branch>` — previously it only checked local branches, so a branch already fetched manually was still reported as not found
+  - `codereview.sh`: the `origin/HEAD` default-branch lookup no longer aborts the whole script under `set -euo pipefail` when `origin/HEAD` isn't set (e.g. fresh clones) — the existing `main` fallback is now actually reached
+
+**Plugins:**
+- dev-essentials v1.12.2
+
+---
+
+## [1.10.2] - 2026-09-03
+
+**Fixed:**
+- md3step v1.2.2:
+  - `mdresearch`/`mdplan`: meta-instructions in `0_context.md` (e.g. "plan only, do not implement") were silently dropped when generating `1_research.md`, leaving `/mdplan` and `/mdimplement` with no signal to respect them. Both skills now extract and carry forward a `# Directives` section verbatim at the top of `1_research.md` and `2_plan.md`.
+
+**Plugins:**
+- md3step v1.2.2
+
+---
+
+## [1.10.1] - 2026-09-03
+
+**Fixed:**
+- dev-essentials v1.12.1:
+  - `issue` skill: the manual-paste fallback command printed by `create_issue.sh` now quotes the base64 payload (`echo "$B64" | base64 -d | xargs open`) instead of leaving it unquoted
+
+**Plugins:**
+- dev-essentials v1.12.1
+
+---
+
+## [1.10.0] - 2026-09-03
+
+**Added:**
+- dev-essentials v1.12.0:
+  - `ding` skill: 5 selectable sounds (`a`-`e`) — pick with a single-letter arg anywhere in `/ding`'s args (e.g. `/ding local c 45s`); omitting it keeps the scope's last-configured sound (default `a`). All 5 are real sound effects, loudness-matched to each other and each lightly pitch-shifted from its source recording so no bundled file is byte-identical to what it was converted from.
+
+**Changed:**
+- dev-essentials v1.12.0:
+  - `ding` skill: config moved from `config.json` to `config.jsonc`, with a header comment listing the current sound choices and explaining how to drop in a custom sound as `<name>-<label>.wav`
+
+**Plugins:**
+- dev-essentials v1.12.0
+
+---
+
 ## [1.9.0] - 2026-08-28
 
 **Added:**

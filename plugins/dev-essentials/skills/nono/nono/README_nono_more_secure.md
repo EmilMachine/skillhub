@@ -91,6 +91,35 @@ Requires testing per runtime — the right set varies with what's installed.
 
 **Concern:** there is no easy workaround while keeping OAuth working. Logging in outside the sandbox first (plain `claude` once) is the standard mitigation — the Keychain wrapper in `README_nono.md §5` is how the macOS shortcut handles it. If you do that, `allow_launch_services` is no longer needed for auth and could be dropped.
 
+### `open_urls` and `listen_port_range` widen the surface beyond login
+
+All `claude-*.jsonc` profiles now also carry `open_urls` (`allow_origins: ["https://claude.ai", "https://claude.com"]`, `allow_localhost: true`) so `claude login` can complete from inside the sandbox (see `README_nono.md §3`), and `claude-mac-web.jsonc` additionally carries `listen_port_range: [[30024, 40024]]` so the OAuth callback server can bind. Both are login-flow scaffolding — a normal coding session never needs to open a browser or accept an inbound connection.
+
+**What's actually exposed while they're enabled:**
+- `open_urls` (activated via `allow_launch_services` + the `--allow-launch-services` CLI flag) — the sandboxed process can ask macOS LaunchServices (or, on Linux, nono's parent-process delegate) to open any URL whose origin is `claude.ai` or `claude.com`. A prompt-injected agent doesn't need a *new* domain to abuse this — an attacker-controlled redirect or query string on either trusted origin is enough to pop a browser tab in front of the user mid-session.
+- `listen_port_range` — the sandboxed process can bind ports in `30024–40024` and accept inbound connections. **On macOS this is broader than the range implies**: Seatbelt cannot filter listen/bind by port number, so once any listen capability is granted, the kernel permits binding *any* port — the declared range only exists to keep the expanded Seatbelt rule count under the ~16,384-port ceiling (the crash this profile was tuned around), not to narrow what's actually reachable. Anything else that can reach localhost — another sandboxed session, a webpage doing DNS rebinding, another local user — can talk to whatever the agent bound.
+
+**Fix — disable both once you're logged in:**
+
+```jsonc
+// claude-mac-locked.jsonc
+{
+  "extends": "claude-mac",
+  "open_urls": { "allow_origins": [], "allow_localhost": false },
+  "allow_launch_services": false
+}
+```
+
+```sh
+nono run --profile claude-mac-locked --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
+```
+
+`open_urls` and `allow_launch_services` both replace-on-override, so a child profile can clear them this way — confirm with `nono profile diff default claude-mac-locked`.
+
+**`listen_port_range` can't be cleared the same way.** Profile list fields are additive across inheritance ("you can always *add* to a list, but you cannot remove something a base already includes"), so a profile that extends `claude-mac-web` keeps its inherited `listen_port_range` no matter what the child says. To actually drop it, either build the locked-down profile from `claude-mac`/`default` directly instead of `claude-mac-web` (re-adding whatever else the web variant provided), or keep `listen_port_range` out of `claude-mac-web.jsonc` in the first place and grant it only via a separate, dedicated login profile.
+
+**Tradeoff:** with `open_urls` cleared and `listen_port_range` gone, `claude login` (re-authenticating, switching accounts, refreshing an expired session) fails outright — you have to switch back to the unlocked profile for that one command, then switch back afterward. Same login-outside-nono tradeoff as `README_nono.md §3`, just expressed as two profiles instead of two invocations.
+
 ### `unsafe_macos_seatbelt_rules` user-preference read is broad
 
 Both mac profiles include `(allow user-preference-read)` to let macOS locale/timezone bootstrapping work. This covers all `NSUserDefaults` domains, not just locale — it includes any app preference plist the agent happens to know the domain name of.
@@ -159,6 +188,7 @@ Reserve `-web` for sessions where you genuinely cannot enumerate the domains in 
 | Workdir contains secrets | all | Pre-flight secret scan; no profile fix |
 | `$HOME/Library` broad | mac | Enumerate specific Library subdirs |
 | `allow_launch_services` | `claude-mac` | Log in outside nono first, then drop |
+| `open_urls` / `listen_port_range` left on permanently | `claude-*` | Split into login profile vs. locked-down profile pair |
 | `(allow user-preference-read)` | mac | Awareness only; no targeted fix |
 | Chrome data readable | linux claude | Drop chrome entries if not using browser WebSearch |
 | `/proc` process enumeration | linux | Awareness only; removing breaks runtimes |

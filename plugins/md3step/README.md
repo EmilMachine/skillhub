@@ -44,6 +44,7 @@ Execute the plan with testing and verification.
 - Sequential numbered files (1, 2, 3)
 - Output in same directory as input
 - Open questions section at top of each file
+- Directives (meta-instructions from `0_context.md`, e.g. "plan only, do not implement") carried forward verbatim at the top of `1_research.md` and `2_plan.md`
 - Supports absolute and relative paths
 - Terse, focused output
 - Test/verify after each implementation step
@@ -55,12 +56,13 @@ Execute the plan with testing and verification.
 - Uses Task/Explore for broad codebase searches
 - Uses Grep/Glob/Read for targeted searches
 - Includes file:line references in findings
+- Extracts meta-instructions from context file into a `# Directives` section
 - Aborts if context file missing
 
 ### /mdplan
 - Breaks work into atomic, testable steps
 - Each step includes Actions, Files, Verify sections
-- Carries forward open questions from research
+- Carries forward open questions and directives from research
 - Aborts if research file missing
 
 ### /mdimplement

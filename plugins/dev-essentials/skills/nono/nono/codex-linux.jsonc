@@ -1,10 +1,10 @@
 {
   // == Run with ==
-  // nono run --profile ./nono/codex-linux.jsonc --allow-cwd -- codex --sandbox danger-full-access "$@"
+  // nono run --profile ./nono/codex-linux.jsonc --no-diagnostics --allow-cwd -- codex --sandbox danger-full-access
   // == Put in central profile ==
   // mkdir -p ~/.config/nono/profiles
   // cp nono/codex-linux.jsonc ~/.config/nono/profiles/codex-linux.jsonc
-  // nono run --profile codex-linux --allow-cwd -- codex --sandbox danger-full-access "$@"
+  // nono run --profile codex-linux --no-diagnostics --allow-cwd -- codex --sandbox danger-full-access
 
   "extends": "default",
   "meta": {

@@ -56,18 +56,7 @@
   // still apply, but a prompt-injected agent can now reach any host. Prefer
   // claude-mac.jsonc unless you specifically need open web access.
   "network": {
-    "block": false,
-    // High-numbered, localhost-only ports so the OAuth callback server can bind
-    // during `claude login` from inside the sandbox. Kept under 16384 ports wide —
-    // macOS Seatbelt's sandbox_init crashes above ~17,770 expanded port rules.
-    "listen_port_range": [[30024, 40024]]
-  },
-  // Supervisor-delegated browser opening for `claude login` — required in addition to
-  // allow_launch_services below, and to the --allow-launch-services CLI flag at runtime.
-  // See README_nono.md §3 and https://nono.sh/docs/cli/clients/claude-code#oauth2-login
-  "open_urls": {
-    "allow_origins": ["https://claude.ai", "https://claude.com"],
-    "allow_localhost": true
+    "block": false
   },
   "unsafe_macos_seatbelt_rules": [
     "(allow user-preference-read)"

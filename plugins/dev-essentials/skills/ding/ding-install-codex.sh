@@ -30,11 +30,11 @@ done
 
 if [[ "$SCOPE" == "local" ]]; then
   PROJECT_DIR="$(pwd)"
-  TARGET_DIR="$PROJECT_DIR/.claude/ding"
-  SETTINGS_FILE="$PROJECT_DIR/.claude/settings.local.json"
+  TARGET_DIR="$PROJECT_DIR/.codex/ding"
+  HOOKS_FILE="$PROJECT_DIR/.codex/hooks.json"
 else
-  TARGET_DIR="$HOME/.claude/ding"
-  SETTINGS_FILE="$HOME/.claude/settings.json"
+  TARGET_DIR="$HOME/.codex/ding"
+  HOOKS_FILE="$HOME/.codex/hooks.json"
 fi
 
 mkdir -p "$TARGET_DIR"
@@ -68,23 +68,42 @@ cat > "$TARGET_DIR/config.jsonc" <<EOF
 }
 EOF
 
-[[ -f "$SETTINGS_FILE" ]] || echo '{}' > "$SETTINGS_FILE"
+[[ -f "$HOOKS_FILE" ]] || echo '{}' > "$HOOKS_FILE"
 
 HOOK_CMD="bash \"$TARGET_DIR/ding-hook.sh\""
 
 already_present=$(jq --arg cmd "$HOOK_CMD" \
   '[.hooks.Stop // [] | .[].hooks[]? | select(.command == $cmd)] | length > 0' \
-  "$SETTINGS_FILE" 2>/dev/null)
+  "$HOOKS_FILE" 2>/dev/null)
 
 if [[ "$already_present" != "true" ]]; then
   tmp=$(mktemp)
   jq --arg cmd "$HOOK_CMD" \
     '.hooks = (.hooks // {}) |
-     .hooks.Stop = (.hooks.Stop // []) + [{"matcher": "*", "hooks": [{"type": "command", "command": $cmd}]}]' \
-    "$SETTINGS_FILE" > "$tmp" && mv "$tmp" "$SETTINGS_FILE"
+     .hooks.Stop = (.hooks.Stop // []) + [{"matcher": "*", "hooks": [{"type": "command", "command": $cmd, "timeout": 30}]}]' \
+    "$HOOKS_FILE" > "$tmp" && mv "$tmp" "$HOOKS_FILE"
 fi
 
-echo "✅ ding ($SCOPE): enabled=$ENABLED threshold=${THRESHOLD}s sound=$SOUND"
-echo "   hook: $SETTINGS_FILE"
+CONFIG_TOML="$HOME/.codex/config.toml"
+FLAG_ADDED="false"
+if [[ -f "$CONFIG_TOML" ]] && grep -qE '^\s*codex_hooks\s*=\s*true' "$CONFIG_TOML"; then
+  : # already enabled
+else
+  mkdir -p "$HOME/.codex"
+  touch "$CONFIG_TOML"
+  if grep -qE '^\[features\]' "$CONFIG_TOML"; then
+    tmp=$(mktemp)
+    awk '/^\[features\]/ && !done { print; print "codex_hooks = true"; done=1; next } { print }' "$CONFIG_TOML" > "$tmp" && mv "$tmp" "$CONFIG_TOML"
+  else
+    printf '\n[features]\ncodex_hooks = true\n' >> "$CONFIG_TOML"
+  fi
+  FLAG_ADDED="true"
+fi
+
+echo "✅ ding ($SCOPE, codex): enabled=$ENABLED threshold=${THRESHOLD}s sound=$SOUND"
+echo "   hooks: $HOOKS_FILE"
 echo "   files: $TARGET_DIR"
-echo "⚠️  Restart the Claude Code session for hook changes to take effect."
+if [[ "$FLAG_ADDED" == "true" ]]; then
+  echo "   enabled codex_hooks feature flag in $CONFIG_TOML"
+fi
+echo "⚠️  Restart the Codex session for hook changes to take effect."

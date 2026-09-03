@@ -68,9 +68,9 @@ Append a terse entry to `CHANGELOG.md` from a source file, a branch diff, or fre
 - **Input:** `<path-to-source-changelog> | "branch <name>" | "<freetext instructions>"`
 
 ### `/ding`
-Install/update a `Stop`-hook sound notifier — dings when Claude finishes a turn, optionally only for turns longer than N seconds. Global or project-local (gitignored `settings.local.json`); one hook per scope, re-running updates it in place; `off` disables without removing it.
-- **Input:** `[local] [off|<seconds>[s]]`
-- **Usage:** `/ding`, `/ding local`, `/ding off`, `/ding local off`, `/ding 60`, `/ding local 80`
+Install/update a `Stop`-hook sound notifier — dings when the agent finishes a turn, optionally only for turns longer than N seconds, with a choice of 5 bundled sounds (`a`-`e`). Global or project-local; one hook per scope, re-running updates it in place; `off` disables without removing it. Config lives in a `config.jsonc` next to the installed hook, documenting the current choices and how to drop in a custom `.wav`. Works in Claude Code (`settings.json`/gitignored `settings.local.json`) and Codex (`hooks.json`, auto-enabling the `codex_hooks` feature flag in `~/.codex/config.toml`).
+- **Input:** `[local] [off|<seconds>[s]] [a|b|c|d|e]`
+- **Usage:** `/ding`, `/ding local`, `/ding off`, `/ding local off`, `/ding 60`, `/ding local 80`, `/ding b`, `/ding local c 45s`
 
 ## Features
 

@@ -46,13 +46,13 @@ From any project directory, sandbox is scoped to that folder via `--allow-cwd`:
 
 ```sh
 # macOS
-nono run --profile claude-mac --allow-cwd -- claude --dangerously-skip-permissions
+nono run --profile claude-mac --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
 
 # Linux
-nono run --profile claude-linux --allow-cwd -- claude --dangerously-skip-permissions
+nono run --profile claude-linux --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
 ```
 
-**One-time login gotcha (both OSes):** the sandbox usually can't open the OAuth callback port. Log in *outside* nono first:
+**One-time login gotcha:** simplest path is to log in *outside* nono first:
 
 ```sh
 claude   # log in once, plain, no nono
@@ -60,6 +60,18 @@ claude   # log in once, plain, no nono
 
 - **macOS:** creds land in Keychain, which the sandbox can't read directly — see the shell shortcut below, which extracts a token before each run.
 - **Linux:** creds land straight in `~/.claude/.credentials.json`, which is already inside the `~/.claude` grant — no extra step needed, `nono-claude` just runs `claude` directly.
+
+**Logging in from inside nono instead:** the profiles already grant an `open_urls` allowlist (`claude.ai`, `claude.com`) so nono's supervisor can open the login page, plus `platform.claude.com` in `network.allow_domain` for the code-exchange call. That's enough on Linux — no extra flag needed. On macOS you also need the `--allow-launch-services` CLI flag for that one session (the profile's `allow_launch_services: true` alone isn't enough to activate it):
+
+```sh
+# macOS — only for the login run
+nono run --profile claude-mac --no-diagnostics --allow-cwd --allow-launch-services -- claude --dangerously-skip-permissions
+
+# Linux
+nono run --profile claude-linux --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
+```
+
+Drop `--allow-launch-services` again for normal sessions after login completes — it's a temporary escalation, not something to leave on permanently.
 
 
 ## 4. Web variant — open network
@@ -69,11 +81,11 @@ claude   # log in once, plain, no nono
 ```sh
 # macOS
 cp nono/claude-mac-web.jsonc ~/.config/nono/profiles/claude-mac-web.jsonc
-nono run --profile claude-mac-web --allow-cwd -- claude --dangerously-skip-permissions
+nono run --profile claude-mac-web --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
 
 # Linux
 cp nono/claude-linux-web.jsonc ~/.config/nono/profiles/claude-linux-web.jsonc
-nono run --profile claude-linux-web --allow-cwd -- claude --dangerously-skip-permissions
+nono run --profile claude-linux-web --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
 ```
 
 These extend `base` (not `claude-mac`/`claude-linux`) — nono profile inheritance only ever *adds* to inherited lists, so a domain allowlist set by a parent can't be widened or cleared by a child. The web variants just never set one, which leaves network unrestricted (nono's default when no `allow_domain`/`network-profile` is applied).
@@ -89,13 +101,13 @@ Add to `~/.bashrc` / `~/.zshrc`:
 nono-claude() {
   security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
     > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json \
-    && nono run --profile claude-mac --allow-cwd -- claude --dangerously-skip-permissions "$@"
+    && nono run --profile claude-mac --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions "$@"
 }
 
 nonoweb-claude() {
   security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
     > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json \
-    && nono run --profile claude-mac-web --allow-cwd -- claude --dangerously-skip-permissions "$@"
+    && nono run --profile claude-mac-web --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions "$@"
 }
 
 ```
@@ -104,11 +116,11 @@ nonoweb-claude() {
 **Linux** — no credential extraction needed:
 ```sh
 nono-claude() {
-  nono run --profile claude-linux --allow-cwd -- claude --dangerously-skip-permissions "$@"
+  nono run --profile claude-linux --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions "$@"
 }
 
 nonoweb-claude() {
-  nono run --profile claude-linux-web --allow-cwd -- claude --dangerously-skip-permissions "$@"
+  nono run --profile claude-linux-web --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions "$@"
 }
 ```
 
@@ -133,7 +145,7 @@ Only needed if one repo requires extra grants (e.g. an internal API domain). Ski
 ```
 
 ```sh
-nono run --profile ./nono/local.jsonc --allow-cwd -- claude --dangerously-skip-permissions
+nono run --profile ./nono/local.jsonc --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
 ```
 
 ## 7. Shell shortcut for the local profile
@@ -147,7 +159,7 @@ nonolocal-claude() {
   [[ -f "$profile" ]] || { echo "No $profile in $(pwd)"; return 1; }
   security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
     > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json \
-    && nono run --profile "$profile" --allow-cwd -- claude --dangerously-skip-permissions "$@"
+    && nono run --profile "$profile" --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions "$@"
 }
 ```
 
@@ -156,7 +168,7 @@ nonolocal-claude() {
 nonolocal-claude() {
   local profile="./nono/local.jsonc"
   [[ -f "$profile" ]] || { echo "No $profile in $(pwd)"; return 1; }
-  nono run --profile "$profile" --allow-cwd -- claude --dangerously-skip-permissions "$@"
+  nono run --profile "$profile" --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions "$@"
 }
 ```
 
@@ -168,7 +180,7 @@ Reload, then run `nono-claude-local` from the repo root. Errors out with a clear
 
 **One-off (ad hoc, this run only):** `--allow <path>` is repeatable —
 ```sh
-nono run --profile claude-mac --allow-cwd --allow ~/code/other-project --allow ~/code/shared-lib \
+nono run --profile claude-mac --no-diagnostics --allow-cwd --allow ~/code/other-project --allow ~/code/shared-lib \
   -- claude --dangerously-skip-permissions
 ```
 
@@ -189,5 +201,5 @@ Re-copy the edited file to `~/.config/nono/profiles/` (step 2) for the change to
 
 | Symptom | Fix |
 |---|---|
-| `OAuth error: Failed to start OAuth callback server` | Log in outside nono first (step 3), or add `"listen_port_range": [{"start":1024,"end":65535}]` under `network` to allow in-sandbox login (wider blast radius, localhost-only). |
+| `OAuth error: Failed to start OAuth callback server` | Log in outside nono first (step 3), or add `"listen_port_range": [[30024, 40024]]` (or another range under ~16384 ports wide — macOS Seatbelt crashes above ~17,770 expanded port rules) under `network` to allow in-sandbox login (wider blast radius, localhost-only). |
 | macOS: login works but `nono-claude` still can't authenticate | Keychain read failed — rerun the `security find-generic-password ...` line manually and check it prints a token. |

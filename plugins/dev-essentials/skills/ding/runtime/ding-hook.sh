@@ -2,15 +2,22 @@
 set -uo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CONFIG="$DIR/config.json"
-SOUND="$DIR/ding.wav"
+CONFIG="$DIR/config.jsonc"
 
 [[ -f "$CONFIG" ]] || exit 0
 
-enabled=$(jq -r '.enabled // false' "$CONFIG" 2>/dev/null)
-threshold=$(jq -r '.threshold // 0' "$CONFIG" 2>/dev/null)
+strip_jsonc() {
+  grep -vE '^[[:space:]]*//' "$CONFIG"
+}
+
+enabled=$(strip_jsonc | jq -r '.enabled // false' 2>/dev/null)
+threshold=$(strip_jsonc | jq -r '.threshold // 0' 2>/dev/null)
+sound=$(strip_jsonc | jq -r '.sound // "a"' 2>/dev/null)
 
 [[ "$enabled" == "true" ]] || exit 0
+
+SOUND=$(ls "$DIR/${sound}-"*.wav 2>/dev/null | head -n1)
+[[ -n "$SOUND" ]] || SOUND=$(ls "$DIR"/a-*.wav 2>/dev/null | head -n1)
 
 if [[ "${threshold:-0}" -gt 0 ]]; then
   input=$(cat)
@@ -34,6 +41,7 @@ if [[ "${threshold:-0}" -gt 0 ]]; then
 fi
 
 play_sound() {
+  [[ -n "$SOUND" ]] || { printf '\a'; return; }
   if command -v afplay >/dev/null 2>&1; then
     afplay "$SOUND"
   elif command -v paplay >/dev/null 2>&1; then

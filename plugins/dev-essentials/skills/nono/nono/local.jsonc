@@ -4,7 +4,7 @@
   // on macOS, extract the Keychain token first (README §5):
   //   security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
   //     > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json
-  // nono run --profile ./nono/local.jsonc --allow-cwd -- claude --dangerously-skip-permissions "$@"
+  // nono run --profile ./nono/local.jsonc --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
   // Or use the nonolocal-claude shell shortcut (README §7).
 
   "extends": "claude-mac",  // or "claude-linux" — pick the profile matching your OS.

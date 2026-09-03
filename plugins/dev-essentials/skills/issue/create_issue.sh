@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 TITLE="${ISSUE_TITLE:?ISSUE_TITLE env var required}"
 BODY="${ISSUE_TEXT:?ISSUE_TEXT env var required}"
 REPO="EmilMachine/skillhub"
@@ -33,6 +35,60 @@ if [[ ${#ERRORS[@]} -gt 0 ]]; then
   exit 2
 fi
 # ---------------------------------------------------------------------------
+
+# --- Version detection (script-computed from actual install state, not guessed) ---
+# Reports what's really installed, so a report against an already-fixed version
+# is visible immediately instead of costing a maintainer a round trip.
+_installed_plugin_version() {
+  local plugin_name="$1" ver=""
+  command -v jq >/dev/null 2>&1 || { echo "unknown"; return; }
+
+  # Claude Code: authoritative "what's actually cached and running"
+  local installed_file="$HOME/.claude/plugins/installed_plugins.json"
+  if [ -f "$installed_file" ]; then
+    ver=$(jq -r --arg p "$plugin_name" \
+      '.plugins | to_entries[] | select(.key | startswith($p + "@")) | .value[0].version // empty' \
+      "$installed_file" 2>/dev/null | head -1)
+  fi
+
+  # Fallback: sibling plugin dir relative to this script (git-clone / symlink
+  # installs used by OpenCode and Codex adapters — see skillhub-update skill)
+  if [ -z "$ver" ]; then
+    local sibling="$SCRIPT_DIR/../../../$plugin_name/.claude-plugin/plugin.json"
+    [ -f "$sibling" ] && ver=$(jq -r '.version // empty' "$sibling" 2>/dev/null)
+  fi
+
+  echo "${ver:-unknown}"
+}
+
+_skillhub_version() {
+  local ver=""
+  command -v jq >/dev/null 2>&1 || { echo "unknown"; return; }
+
+  local local_mp="$SCRIPT_DIR/../../../../.claude-plugin/marketplace.json"
+  [ -f "$local_mp" ] && ver=$(jq -r '.metadata.version // empty' "$local_mp" 2>/dev/null)
+
+  if [ -z "$ver" ]; then
+    local known_mkts="$HOME/.claude/plugins/known_marketplaces.json"
+    if [ -f "$known_mkts" ]; then
+      local loc
+      loc=$(jq -r '.skillhub.installLocation // empty' "$known_mkts" 2>/dev/null)
+      if [ -n "$loc" ] && [ -f "$loc/.claude-plugin/marketplace.json" ]; then
+        ver=$(jq -r '.metadata.version // empty' "$loc/.claude-plugin/marketplace.json" 2>/dev/null)
+      fi
+    fi
+  fi
+
+  echo "${ver:-unknown}"
+}
+
+PLUGIN_NAME=$(grep -m1 -E '^plugin:' <<< "$BODY" | sed -E 's/^plugin:[[:space:]]*//' | awk '{print $1}')
+if [ -n "${PLUGIN_NAME:-}" ]; then
+  BODY="${BODY}
+plugin_version: $(_installed_plugin_version "$PLUGIN_NAME")
+skillhub_version: $(_skillhub_version)"
+fi
+# -----------------------------------------------------------------------------
 
 # --- SCRUB — strip known secret shapes before posting ---
 scrub() {
@@ -109,5 +165,5 @@ else
   echo "Run this instead — it decodes and opens it in one shot (swap 'open' for 'xdg-open' on Linux):"
   echo ""
   B64=$(printf '%s' "$URL" | base64 | tr -d '\n')
-  echo "  echo $B64 | base64 -d | xargs open"
+  echo "  echo \"$B64\" | base64 -d | xargs open"
 fi

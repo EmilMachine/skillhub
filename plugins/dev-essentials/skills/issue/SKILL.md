@@ -25,6 +25,7 @@ allowed-tools: Bash(bash *create_issue.sh*), Bash(open *), Bash(xdg-open *)
      error_type: <category: validation | auth | network | parse | other>
      steps_to_reproduce: <concise numbered steps, generic — no internal specifics>
      ```
+   - Do **not** add version fields yourself — `create_issue.sh` appends `plugin_version:` and `skillhub_version:` automatically, read from the actual installed state (not guessed), so a report against an already-fixed version is visible on sight.
 
 **Redaction audit (do this before Phase 2):** Re-read every field. Replace any specific project, folder, repo, or org name with `[PROJECT]`, path segments with `basepath/subpath`, org names with `[ORG]`. When in doubt, redact it.
 

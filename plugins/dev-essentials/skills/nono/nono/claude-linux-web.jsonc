@@ -66,6 +66,5 @@
   "open_urls": {
     "allow_origins": ["https://claude.ai", "https://claude.com"],
     "allow_localhost": true
-  },
-  "interactive": true
+  }
 }

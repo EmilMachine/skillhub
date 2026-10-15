@@ -37,19 +37,6 @@
     "allow_file": [
       "$HOME/.CFUserTextEncoding", // macOS locale/encoding bootstrap
       "$HOME/.local/bin/codex"     // the Codex CLI binary itself
-    ],
-    // Paths Codex touches at shutdown that we want silently denied — no interactive
-    // review prompt. Browser dirs are already blocked by deny_browser_data_* groups.
-    "suppress_save_prompt": [
-      "$HOME",
-      "$HOME/Library/Application Support/Arc/User Data",
-      "$HOME/Library/Application Support/BraveSoftware/Brave-Browser",
-      "$HOME/Library/Application Support/Chromium",
-      "$HOME/Library/Application Support/Google/Chrome",
-      "$HOME/Library/Application Support/Microsoft Edge",
-      "$HOME/Library/Application Support/Vivaldi",
-      "$HOME/Library/Application Support/com.operasoftware.Opera",
-      "/home"
     ]
   },
   "environment": {
@@ -66,6 +53,5 @@
   // CFPreferences/NSUserDefaults (locale, timezone) read at startup
   "unsafe_macos_seatbelt_rules": [
     "(allow user-preference-read)"
-  ],
-  "interactive": true
+  ]
 }

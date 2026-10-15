@@ -1,0 +1,46 @@
+# Colima profile for the isolated `mysubnetwork` daemon.
+#
+# macOS ONLY — Colima is a Lima-based VM wrapper that only runs on macOS.
+# On Linux, Docker runs natively; no VM or virtiofs hardening is needed.
+#
+# DO NOT use this file directly with `colima start --config`.
+# It is a reference/template only. To apply it, run the setup script
+# in this same directory:
+#
+#   nono/docker_mac_colima/setup-colima.sh
+#
+# That script:
+#   1. Creates the VM with `colima start mysubnetwork --network-address`
+#   2. Patches the generated ~/.colima/mysubnetwork/colima.yaml to match
+#      the two security-relevant fields below (mounts, provision).
+#
+# This file is the canonical source of truth for those fields.
+# All other fields (cpu, memory, arch, etc.) are left at Colima defaults.
+
+# ── Security-relevant fields ────────────────────────────────────────────────
+
+# Replace Colima's default $HOME virtiofs mount with an empty scratch dir.
+# Without this, containers can `docker run -v $HOME:/mnt alpine` and read
+# real Mac files. The scratch dir contains nothing sensitive.
+mounts:
+  - location: ~/.colima-mounts/mysubnetwork
+    writable: true
+
+# Block containers from reaching the Mac host via host.docker.internal.
+# host.docker.internal resolves to the VZ gateway (192.168.5.2) which the
+# Mac's VZ virtual switch proxies back to Mac loopback — bypassing nono's
+# network.block entirely. Blocking both Colima subnet IPs closes this.
+#
+# The script polls for DOCKER-USER because Docker creates that chain after
+# the VM boots; mode:system runs as root but before Docker is fully ready.
+provision:
+  - mode: system
+    script: |
+      for i in $(seq 1 60); do
+        iptables -L DOCKER-USER >/dev/null 2>&1 && break
+        sleep 1
+      done
+      iptables -D DOCKER-USER -d 192.168.5.1 -j DROP 2>/dev/null || true
+      iptables -I DOCKER-USER 1 -d 192.168.5.1 -j DROP
+      iptables -D DOCKER-USER -d 192.168.5.2 -j DROP 2>/dev/null || true
+      iptables -I DOCKER-USER 1 -d 192.168.5.2 -j DROP

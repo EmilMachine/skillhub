@@ -51,6 +51,5 @@
       "auth.openai.com",    // OAuth token refresh
       "chatgpt.com"         // ChatGPT / Codex backend flows
     ]
-  },
-  "interactive": true
+  }
 }

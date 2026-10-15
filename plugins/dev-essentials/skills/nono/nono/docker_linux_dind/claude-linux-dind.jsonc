@@ -1,0 +1,66 @@
+{
+  // == Run with ==
+  // Start DinD first (idempotent):
+  //   nono/docker_linux_dind/start-dind.sh
+  // Then:
+  //   nono run --profile ./nono/docker_linux_dind/claude-linux-dind.jsonc --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
+  // == Install to central location (profile + scripts together) ==
+  // mkdir -p ~/.config/nono/profiles ~/.config/nono/docker_linux_dind
+  // cp nono/docker_linux_dind/claude-linux-dind.jsonc ~/.config/nono/profiles/claude-linux-dind.jsonc
+  // cp nono/docker_linux_dind/start-dind.sh nono/docker_linux_dind/stop-dind.sh ~/.config/nono/docker_linux_dind/
+  // chmod +x ~/.config/nono/docker_linux_dind/*.sh
+  // Use shell shortcut nonodind-claude from nono/docker_linux_dind/README_nono_dind.md — it calls ~/.config/nono/docker_linux_dind/.
+
+  "extends": "default",
+  "meta": {
+    "name": "claude-linux-dind",
+    "version": "1.0.0",
+    "description": "Claude Code, Linux sandbox, Docker via isolated DinD container (mysubnetwork-dind)"
+  },
+  "groups": {
+    "include": ["node_runtime", "python_runtime", "go_runtime", "git_config"]
+  },
+  "workdir": {
+    "access": "readwrite"
+  },
+  "filesystem": {
+    "read": [
+      "/proc",
+      "$HOME/.config/npm",
+      "$HOME/.local/share/npm",
+      "$HOME/.local/share/node_modules"
+    ],
+    "allow": [
+      "$HOME/.cache",
+      "$HOME/.agents",
+      "/tmp",
+      "$HOME/.claude"
+    ],
+    "allow_file": [
+      "$HOME/.claude.json",
+      "$HOME/.claude.json.lock",
+      "$HOME/.local/bin/claude"
+    ],
+    "write_file": [
+      "$HOME/.claude.lock"
+    ],
+    // Grant access to the DinD daemon socket only — not the real host daemon.
+    // Escapes 02/03/05 are contained to the throwaway DinD container.
+    "unix_socket": ["/tmp/mysubnetwork-dind/docker.sock"]
+  },
+  "environment": {
+    "allow_vars": ["PATH", "HOME", "TERM", "LANG", "DOCKER_HOST", "TESTCONTAINERS_HOST_OVERRIDE", "TESTCONTAINERS_RYUK_DISABLED"]
+  },
+  "network": {
+    "allow_domain": [
+      "claude.ai",
+      "claude.com",
+      "platform.claude.com",
+      "api.anthropic.com"
+    ]
+  },
+  "open_urls": {
+    "allow_origins": ["https://claude.ai", "https://claude.com"],
+    "allow_localhost": true
+  }
+}

@@ -72,6 +72,5 @@
   "unsafe_macos_seatbelt_rules": [
     "(allow user-preference-read)"
   ],
-  "allow_launch_services": true,
-  "interactive": true
+  "allow_launch_services": true
 }

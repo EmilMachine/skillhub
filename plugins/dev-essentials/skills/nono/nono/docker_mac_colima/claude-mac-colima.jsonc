@@ -1,0 +1,72 @@
+{
+  // == Run with ==
+  // Start the colima VM first (idempotent):
+  //   colima status mysubnetwork &>/dev/null || colima start mysubnetwork --network-address
+  // Pull Keychain token (sandbox can't read Keychain):
+  //   security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
+  //     > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json
+  // Then:
+  //   nono run --profile ./nono/docker_mac_colima/claude-mac-colima.jsonc --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
+  // == Put in central profile ==
+  // mkdir -p ~/.config/nono/profiles
+  // cp nono/docker_mac_colima/claude-mac-colima.jsonc ~/.config/nono/profiles/claude-mac-colima.jsonc
+  // Use shell shortcut nonodocker-claude from nono/docker_mac_colima/README_nono_colima.md — it handles colima start/stop.
+
+  "extends": "default",
+  "meta": {
+    "name": "claude-mac-colima",
+    "version": "1.0.0",
+    "description": "Claude Code, macOS sandbox, Docker via isolated Colima VM (mysubnetwork)"
+  },
+  "groups": {
+    "include": ["node_runtime", "python_runtime", "go_runtime", "git_config"]
+  },
+  "workdir": {
+    "access": "readwrite"
+  },
+  "filesystem": {
+    "read": [
+      "$HOME/.config",
+      "$HOME/.local/share",
+      "$HOME/Library"
+    ],
+    "allow": [
+      "$HOME/.cache",
+      "$HOME/.agents",
+      "/tmp",
+      "$HOME/.claude"
+    ],
+    "allow_file": [
+      "$HOME/.claude.json",
+      "$HOME/.claude.json.lock",
+      "$HOME/.CFUserTextEncoding",
+      "$HOME/.local/bin/claude"
+    ],
+    "write_file": [
+      "$HOME/.claude.lock"
+    ],
+    // Grant access to the Colima mysubnetwork daemon socket only — not the host daemon.
+    // Escapes 02/03/05 are contained to the Colima VM; 01/04 require --internal network
+    // in conftest.py (see myservice/secure/BEST_SIMPLE_APPROACH.md §1).
+    "unix_socket": ["$HOME/.colima/mysubnetwork/docker.sock"]
+  },
+  "environment": {
+    "allow_vars": ["PATH", "HOME", "TERM", "LANG", "DOCKER_HOST", "TESTCONTAINERS_HOST_OVERRIDE", "TESTCONTAINERS_RYUK_DISABLED"]
+  },
+  "network": {
+    "allow_domain": [
+      "claude.ai",
+      "claude.com",
+      "platform.claude.com",
+      "api.anthropic.com"
+    ]
+  },
+  "open_urls": {
+    "allow_origins": ["https://claude.ai", "https://claude.com"],
+    "allow_localhost": true
+  },
+  "unsafe_macos_seatbelt_rules": [
+    "(allow user-preference-read)"
+  ],
+  "allow_launch_services": true
+}

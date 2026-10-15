@@ -197,6 +197,17 @@ nono run --profile claude-mac --no-diagnostics --allow-cwd --allow ~/code/other-
 ```
 Re-copy the edited file to `~/.config/nono/profiles/` (step 2) for the change to take effect. Prefer this over CLI flags if you always work across the same set of repos.
 
+## 9. Docker inside the sandbox (optional)
+
+Need Docker (e.g. testcontainers) from within nono? Don't expose the host Docker socket — use an isolated daemon instead, so escaped containers can't reach host files or services:
+
+| Folder | Platform | Approach |
+|---|---|---|
+| `docker_mac_colima/` | macOS | Dedicated Colima VM — see `README_nono_colima.md` |
+| `docker_linux_dind/` | Linux / CI | Throwaway `docker:dind` container — see `README_nono_dind.md` |
+
+Each folder ships its own profile, setup/start/stop scripts, and README.
+
 ## Troubleshooting
 
 | Symptom | Fix |

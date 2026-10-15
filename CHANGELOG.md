@@ -2,6 +2,23 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.11.0] - 2026-10-15
+
+**Added:**
+- dev-essentials v1.14.0:
+  - `nono` skill: `docker_mac_colima/` (macOS, isolated Colima VM) and `docker_linux_dind/` (Linux/CI, `docker:dind`) templates — profile, setup/start/stop scripts, README each — for running Docker from inside the sandbox without exposing the host daemon
+  - `README_nono.md`: new section 9 pointing to the Docker variants
+
+**Removed:**
+- dev-essentials v1.14.0:
+  - `nono` skill: `claude-mac-web-docker.jsonc` — superseded by `docker_mac_colima/`
+  - `nono` profiles: `"interactive": true` and `suppress_save_prompt` blocks
+
+**Plugins:**
+- dev-essentials v1.14.0
+
+---
+
 ## [1.10.4] - 2026-09-03
 
 **Added:**

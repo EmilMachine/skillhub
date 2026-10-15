@@ -8,7 +8,7 @@
       "name": "md3step",
       "source": {
         "source": "git-subdir",
-        "url": "https://github.com/EmilMachine/skillhub.git",
+        "url": "git@github-personal:EmilMachine/skillhub.git",
         "path": "./plugins/md3step",
         "ref": "main"
       },
@@ -22,7 +22,7 @@
       "name": "dev-essentials",
       "source": {
         "source": "git-subdir",
-        "url": "https://github.com/EmilMachine/skillhub.git",
+        "url": "git@github-personal:EmilMachine/skillhub.git",
         "path": "./plugins/dev-essentials",
         "ref": "main"
       },
@@ -36,7 +36,7 @@
       "name": "dev-py",
       "source": {
         "source": "git-subdir",
-        "url": "https://github.com/EmilMachine/skillhub.git",
+        "url": "git@github-personal:EmilMachine/skillhub.git",
         "path": "./plugins/dev-py",
         "ref": "main"
       },

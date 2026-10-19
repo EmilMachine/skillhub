@@ -2,6 +2,27 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) | Versioning: [Semver](https://semver.org/)
 
+## [1.12.0] - 2026-10-19
+
+**Added:**
+- dev-essentials v1.15.0:
+  - `devcontainer` skill: `noweb` variant — `Dockerfile_claude_slim_noweb` (iptables egress allowlist to Anthropic domains, applied by a root entrypoint that drops to `devcontainer` via gosu), `devcontainer_noweb.json` (`containerUser: root`, `--cap-add=NET_ADMIN`), `README_devcontainer_noweb.md`
+  - `nono` skill: `claude-mac-ollama.jsonc` profile (run Claude via `ollama launch claude`), `claude_build_in_sandbox.json` example settings for Claude Code's built-in sandbox
+
+**Changed:**
+- dev-essentials v1.15.0:
+  - `nono` skill: `-web` profiles, `README_nono.md` and `nonoweb-claude` shortcut no longer use `--dangerously-skip-permissions` — with open egress, permission prompts stay on; `local.jsonc` notes the same when extending a `-web` profile
+  - `devcontainer` skill: `@devcontainers/cli` pin bumped to 0.89.0
+
+**Removed:**
+- dev-essentials v1.15.0:
+  - `nono` skill: nono vs built-in sandbox comparison sections from `claude_build_in_sandbox.md`
+
+**Plugins:**
+- dev-essentials v1.15.0
+
+---
+
 ## [1.11.0] - 2026-10-15
 
 **Added:**

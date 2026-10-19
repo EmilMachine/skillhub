@@ -81,16 +81,18 @@ Drop `--allow-launch-services` again for normal sessions after login completes â
 ```sh
 # macOS
 cp nono/claude-mac-web.jsonc ~/.config/nono/profiles/claude-mac-web.jsonc
-nono run --profile claude-mac-web --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
+nono run --profile claude-mac-web --no-diagnostics --allow-cwd -- claude
 
 # Linux
 cp nono/claude-linux-web.jsonc ~/.config/nono/profiles/claude-linux-web.jsonc
-nono run --profile claude-linux-web --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions
+nono run --profile claude-linux-web --no-diagnostics --allow-cwd -- claude
 ```
 
 These extend `base` (not `claude-mac`/`claude-linux`) â€” nono profile inheritance only ever *adds* to inherited lists, so a domain allowlist set by a parent can't be widened or cleared by a child. The web variants just never set one, which leaves network unrestricted (nono's default when no `allow_domain`/`network-profile` is applied).
 
 > **Trade-off:** this removes the network egress guardrail. Filesystem/command restrictions are unchanged, but a prompt-injected or misbehaving agent can now reach any host, including exfiltrating whatever it can read locally. Default to the restricted profile; reach for `-web` only for the session that needs it.
+>
+> **No `--dangerously-skip-permissions` with `-web`:** with open egress, Claude Code's permission prompts are the remaining check on what gets fetched or sent out, so the web commands above (and `nonoweb-claude` below) intentionally leave the flag off.
 
 ## 5. Shell shortcut
 
@@ -107,7 +109,7 @@ nono-claude() {
 nonoweb-claude() {
   security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
     > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json \
-    && nono run --profile claude-mac-web --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions "$@"
+    && nono run --profile claude-mac-web --no-diagnostics --allow-cwd -- claude "$@"
 }
 
 ```
@@ -120,7 +122,7 @@ nono-claude() {
 }
 
 nonoweb-claude() {
-  nono run --profile claude-linux-web --no-diagnostics --allow-cwd -- claude --dangerously-skip-permissions "$@"
+  nono run --profile claude-linux-web --no-diagnostics --allow-cwd -- claude "$@"
 }
 ```
 

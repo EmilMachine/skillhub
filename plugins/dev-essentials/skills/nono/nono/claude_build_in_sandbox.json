@@ -1,0 +1,27 @@
+{
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "autoAllowBashIfSandboxed": true,
+    "filesystem": {
+      "allowWrite": [],
+      "denyRead": ["/Users", "/home", "/Volumes", "/mnt", "/media", "/root"],
+      "allowRead": ["."],
+      "disabled": false
+    },
+    "network": {
+      "allowedDomains": ["*.npmjs.org"],
+      "strictAllowlist": true
+    },
+    "credentials": {
+      "files": [
+        { "path": "~/.aws/credentials", "mode": "deny" },
+        { "path": "~/.ssh", "mode": "deny" }
+      ],
+      "envVars": [
+        { "name": "GITHUB_TOKEN", "mode": "deny" }
+      ]
+    }
+  }
+}

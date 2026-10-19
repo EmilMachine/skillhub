@@ -1,0 +1,76 @@
+{
+  // == Run with (Claude needs an extra step — see README_nono.md §3/§5) ==
+  // macOS can't read Keychain from inside the sandbox, so pull the token out first:
+  // security find-generic-password -a "$USER" -s "Claude Code-credentials" -w \
+  //   > ~/.claude/.credentials.json && chmod 600 ~/.claude/.credentials.json
+  // nono run --profile ./nono/claude-mac-ollama.jsonc --no-diagnostics --allow-cwd -- ollama launch claude --dangerously-skip-permissions
+  // == Put in central profile ==
+  // mkdir -p ~/.config/nono/profiles
+  // cp nono/claude-mac-ollama.jsonc ~/.config/nono/profiles/claude-mac-ollama.jsonc
+  // nono run --profile claude-mac-ollama --no-diagnostics --allow-cwd -- ollama launch claude --dangerously-skip-permissions
+
+  "extends": "default",
+  "meta": {
+    "name": "claude-mac-ollama",
+    "version": "1.0.0",
+    "description": "Claude Code via ollama launch, macOS sandbox"
+  },
+  "groups": {
+    "include": ["node_runtime", "python_runtime", "go_runtime", "git_config"]
+    // see more https://nono.sh/docs/cli/features/profiles-groups
+  },
+  "workdir": {
+    "access": "readwrite"
+  },
+  "filesystem": {
+    // Broad parent paths are safe on macOS — seatbelt (unlike Landlock on Linux)
+    // can enforce deny-within-allow so no overlap conflicts arise.
+    "read": [
+      "$HOME/.config",      // app/tool configs (npm, etc.)
+      "$HOME/.local/share", // app data (node, python, etc.)
+      "$HOME/Library"       // macOS app support dirs (frameworks, caches)
+    ],
+    "allow": [
+      "$HOME/.cache",
+      "$HOME/.agents",
+      "/tmp",
+      "$HOME/.claude",       // config, history, AND auth
+      "$HOME/.ollama"        // Ollama models, manifests, and config 
+    ],
+    "allow_file": [
+      "$HOME/.claude.json",        // top-level Claude Code config (model, theme, etc.)
+      "$HOME/.claude.json.lock",   // held during config reads; must be visible to avoid ENOENT
+      "$HOME/.CFUserTextEncoding", // macOS locale/encoding bootstrap
+      "$HOME/.local/bin/claude"   // the Claude Code binary itself
+    ],
+    "write_file": [
+      "$HOME/.claude.lock"         // Claude writes this on startup for concurrent-instance detection
+    ]
+  },
+  "environment": {
+    "allow_vars": ["PATH", "HOME", "TERM", "LANG"]
+  },
+  "network": {
+    // Only Anthropic/Claude endpoints — everything else (curl, git push/pull, etc.) is blocked
+    "allow_domain": [
+      "claude.ai",           // web UI / auth flows
+      "claude.com",          // OAuth2 authorize endpoint (current login flow)
+      "platform.claude.com", // OAuth2 code exchange endpoint
+      "api.anthropic.com",    // inference API
+      "127.0.0.1"      // Ollama REST API on :11434
+    ],
+    "open_port":[11434]
+  },
+  // Supervisor-delegated browser opening for `claude login` — required in addition to
+  // allow_launch_services below, and to the --allow-launch-services CLI flag at runtime.
+  // See README_nono.md §3 and https://nono.sh/docs/cli/clients/claude-code#oauth2-login
+  "open_urls": {
+    "allow_origins": ["https://claude.ai", "https://claude.com"],
+    "allow_localhost": true
+  },
+  // CFPreferences/NSUserDefaults (locale, timezone) read at startup
+  "unsafe_macos_seatbelt_rules": [
+    "(allow user-preference-read)"
+  ],
+  "allow_launch_services": true   // required for Claude Code to open URLs (browser-based auth, etc.)
+}

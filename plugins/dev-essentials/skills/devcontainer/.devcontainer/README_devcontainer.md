@@ -11,7 +11,7 @@ A dev container runs your tools (Python, uv, Claude Code) inside Docker while yo
 ### Devcontainer-cli install
 devcontainer cli installed (pinned to protect versus supply-chain attacks)
 ```sh
-npm -g install @devcontainers/cli@0.87.0
+npm -g install @devcontainers/cli@0.89.0
 ```
 
 Add to `~/.bashrc` or `~/.zshrc`:

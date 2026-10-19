@@ -9,6 +9,7 @@
 
   "extends": "claude-mac",  // or "claude-linux" — pick the profile matching your OS.
   // add -web e.g. claude-mac-web if you need that.
+  // If you extend a -web profile, drop --dangerously-skip-permissions from the run command.
   "filesystem": {
     // Grant readwrite access to a project folder outside the working directory.
     // Safe to include: no credentials, no shell configs, no browser data.

@@ -1,0 +1,140 @@
+# syntax=docker/dockerfile:1.7
+
+FROM python:3.13-slim
+
+ARG NODE_MAJOR=24
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ENV DEBIAN_FRONTEND=noninteractive \
+  PIP_DISABLE_PIP_VERSION_CHECK=1 \
+  PIP_NO_CACHE_DIR=1 \
+  PIP_ROOT_USER_ACTION=ignore \
+  PYTHONDONTWRITEBYTECODE=1 \
+  PYTHONUNBUFFERED=1 \
+  TERM=xterm-256color \
+  COLORTERM=truecolor
+
+RUN set -eux; \
+  apt-get update && apt-get install -y --no-install-recommends \
+  git \
+  ripgrep \
+  curl \
+  wget \
+  gpg \
+  jq \
+  fd-find \
+  tree \
+  make \
+  patch \
+  sqlite3 \
+  unzip \
+  zip \
+  procps \
+  file \
+  vim \
+  iptables \
+  gosu \
+  && ln -s /usr/bin/fdfind /usr/local/bin/fd \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN set -eux; \
+  if ! getent group devcontainer >/dev/null; then groupadd --gid 2001 devcontainer; fi; \
+  if ! id --user devcontainer >/dev/null 2>&1; then \
+    useradd --uid 2001 --gid 2001 --create-home --shell /bin/bash devcontainer; \
+  fi
+
+RUN set -eux; \
+  mkdir -p /etc/apt/keyrings \
+  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+     | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+  && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_${NODE_MAJOR}.x nodistro main" \
+     | tee /etc/apt/sources.list.d/nodesource.list \
+  && apt-get update && apt-get install -y --no-install-recommends nodejs \
+  && rm -rf /var/lib/apt/lists/* \
+  && npm config set --global strict-ssl true \
+  && npm config set --global registry https://registry.npmjs.org/ \
+  && npm config set --global audit true \
+  && npm config set --global update-notifier false \
+  && npm config set --global fund false \
+  && npm install -g pnpm@11.5.3
+
+# Entrypoint is installed as root here (COPY/RUN always run as root at this
+# point in the build) so the file is root-owned and not writable by devcontainer.
+# containerUser:root in devcontainer_noweb.json makes Docker start the container
+# as root, which runs this entrypoint; gosu then drops to devcontainer before
+# the shell is handed to the user.
+#
+# NOTE: CDN IPs are resolved at container start time. If Cloudflare/Anthropic
+# rotates IPs mid-session, already-established connections survive (conntrack),
+# but new connections to rotated IPs will be blocked until restart.
+COPY <<'EOF' /usr/local/bin/entrypoint-noweb.sh
+#!/bin/bash
+set -euo pipefail
+
+# ── Build iptables allowlist ────────────────────────────────────────────────
+# Rules are accumulated first (policy stays ACCEPT), then a final DROP is
+# appended so there is no window where traffic is unexpectedly blocked.
+
+iptables -F OUTPUT 2>/dev/null || true
+iptables -F INPUT  2>/dev/null || true
+iptables -P OUTPUT ACCEPT
+iptables -P INPUT  ACCEPT
+
+# Loopback — always allowed
+iptables -A OUTPUT -o lo -j ACCEPT
+iptables -A INPUT  -i lo -j ACCEPT
+
+# Allow responses to connections we initiated
+iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT  -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# DNS out — required to resolve Anthropic domains below
+iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
+
+# Resolve Claude/Anthropic domains and allow their IPs on HTTPS only.
+# Mirrors the network allowlist from nono/claude-mac.jsonc:
+#   claude.ai           – web UI / auth flows
+#   claude.com          – OAuth2 authorize endpoint
+#   platform.claude.com – OAuth2 code exchange endpoint
+#   api.anthropic.com   – inference API
+for domain in claude.ai claude.com platform.claude.com api.anthropic.com; do
+    while IFS= read -r ip; do
+        [[ -n "$ip" ]] || continue
+        iptables -A OUTPUT -d "$ip" -p tcp --dport 443 -j ACCEPT
+        echo "[noweb] allowed $domain → $ip :443"
+    done < <(getent ahostsv4 "$domain" 2>/dev/null | awk '{print $1}' | sort -u || true)
+done
+
+# Lock down: anything not matched above is dropped
+iptables -A OUTPUT -j DROP
+iptables -A INPUT  -j DROP
+
+echo "[noweb] iptables allowlist applied"
+
+# ── Drop privileges ─────────────────────────────────────────────────────────
+exec gosu devcontainer "$@"
+EOF
+RUN chmod 755 /usr/local/bin/entrypoint-noweb.sh
+
+USER devcontainer
+
+ENV PNPM_HOME=/home/devcontainer/.local/share/pnpm
+ENV PATH="/home/devcontainer/.local/share/pnpm/bin:/home/devcontainer/.local/bin:${PATH}"
+
+# Explicit version pin as supply-chain guard.
+RUN pip install --user uv==0.7.13
+
+# 7-day release age supply chain guard - 7*24*60 = 10080 minutes
+RUN set -eux; \
+  pnpm config set minimumReleaseAge 10080 \
+  && pnpm add -g \
+     --allow-build=@anthropic-ai/claude-code \
+     @anthropic-ai/claude-code \
+  && claude --version
+
+WORKDIR /workspaces
+
+ENTRYPOINT ["/usr/local/bin/entrypoint-noweb.sh"]
+CMD ["bash"]
